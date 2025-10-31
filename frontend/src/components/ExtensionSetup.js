@@ -95,6 +95,7 @@ function ExtensionSetup({ user, token }) {
                 <p style={{ color: "#64748b", marginBottom: "1.5rem", lineHeight: "1.6" }}>Download the Kairo Chrome extension package to get started with real-time focus tracking.</p>
                 <Button
                   data-testid="download-extension-button"
+                  onClick={handleDownload}
                   style={{
                     background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
                     borderRadius: "12px",

@@ -91,7 +91,7 @@ class KairoAPITester:
         """Test user registration"""
         timestamp = datetime.now().strftime("%H%M%S")
         test_user_data = {
-            "email": f"test_user_{timestamp}@kairo.test",
+            "email": f"test_user_{timestamp}@example.com",
             "username": f"testuser_{timestamp}",
             "password": "TestPass123!"
         }

@@ -1,52 +1,99 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import Auth from "@/components/Auth";
+import Dashboard from "@/components/Dashboard";
+import ExtensionSetup from "@/components/ExtensionSetup";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
+function App() {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("kairo_token"));
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is logged in
+    if (token) {
+      validateToken();
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const validateToken = async () => {
     try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+      // Try to fetch user data with the token
+      const response = await axios.get(`${API}/browsing/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // If successful, token is valid
+      const userData = JSON.parse(localStorage.getItem("kairo_user"));
+      setUser(userData);
+    } catch (error) {
+      // Token is invalid, clear it
+      localStorage.removeItem("kairo_token");
+      localStorage.removeItem("kairo_user");
+      setToken(null);
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  const handleLogin = (userData, userToken) => {
+    setUser(userData);
+    setToken(userToken);
+    localStorage.setItem("kairo_token", userToken);
+    localStorage.setItem("kairo_user", JSON.stringify(userData));
+    toast.success("Welcome back to Kairo!");
+  };
 
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+  const handleLogout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("kairo_token");
+    localStorage.removeItem("kairo_user");
+    toast.success("Logged out successfully");
+  };
 
-function App() {
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route 
+            path="/" 
+            element={
+              !user ? <Auth onLogin={handleLogin} /> : <Navigate to="/dashboard" />
+            } 
+          />
+          <Route 
+            path="/dashboard" 
+            element={
+              user ? <Dashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            } 
+          />
+          <Route 
+            path="/extension-setup" 
+            element={
+              user ? <ExtensionSetup user={user} token={token} /> : <Navigate to="/" />
+            } 
+          />
         </Routes>
       </BrowserRouter>
+      <Toaster position="top-right" />
     </div>
   );
 }

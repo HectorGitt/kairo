@@ -413,6 +413,32 @@ async def get_goals(current_user: User = Depends(get_current_user)):
     
     return goals
 
+# ==================== EXTENSION DOWNLOAD ====================
+
+@api_router.get("/extension/download")
+async def download_extension():
+    """Create and serve the extension as a zip file"""
+    try:
+        extension_path = Path("/app/extension")
+        zip_path = Path("/tmp/kairo-extension.zip")
+        
+        # Create zip file
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Add all extension files
+            for file_path in extension_path.rglob("*"):
+                if file_path.is_file():
+                    arcname = file_path.relative_to(extension_path.parent)
+                    zipf.write(file_path, arcname)
+        
+        return FileResponse(
+            path=str(zip_path),
+            media_type="application/zip",
+            filename="kairo-extension.zip"
+        )
+    except Exception as e:
+        logger.error(f"Error creating extension zip: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to create extension package")
+
 # ==================== HEALTH CHECK ====================
 
 @api_router.get("/")

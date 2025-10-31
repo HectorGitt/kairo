@@ -301,7 +301,7 @@ class KairoAPITester:
         if self.test_register():
             # Store email for login test
             timestamp = datetime.now().strftime("%H%M%S")
-            self.test_email = f"test_user_{timestamp}@kairo.test"
+            self.test_email = f"test_user_{timestamp}@example.com"
         
         self.test_invalid_login()
         self.test_unauthorized_access()

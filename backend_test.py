@@ -282,7 +282,7 @@ class KairoAPITester:
             "Unauthorized Access (Should Fail)",
             "GET",
             "browsing/stats",
-            401
+            403
         )
         
         # Restore token

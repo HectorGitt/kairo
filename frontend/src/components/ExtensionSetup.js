@@ -5,6 +5,22 @@ import { useNavigate } from "react-router-dom";
 function ExtensionSetup({ user, token }) {
   const navigate = useNavigate();
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
+
+  const handleDownload = async () => {
+    try {
+      // Create a link and trigger download
+      const link = document.createElement('a');
+      link.href = `${API}/extension/download`;
+      link.download = 'kairo-extension.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download extension. Please try again.');
+    }
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%)" }}>

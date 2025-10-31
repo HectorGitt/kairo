@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kairo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 380px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      padding: 0;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      padding: 1.5rem;
+      color: white;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .header p {
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 1.5rem;
+    }
+
+    .status {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .status-dot.inactive {
+      background: #ef4444;
+    }
+
+    .settings {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .settings h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #475569;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: monospace;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9375rem;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .success-msg {
+      background: #dcfce7;
+      color: #166534;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .link a {
+      color: #0ea5e9;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>
+      <span>🧠</span>
+      Kairo
+    </h1>
+    <p>Your AI Accountability Partner</p>
+  </div>
+
+  <div class="content">
+    <div class="status">
+      <div class="status-indicator">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText" style="font-size: 0.875rem; font-weight: 500; color: #334155;">Not Configured</span>
+      </div>
+      <p style="font-size: 0.8125rem; color: #64748b;">Configure your settings below to start tracking</p>
+    </div>
+
+    <div id="successMsg" class="success-msg">
+      ✓ Settings saved successfully!
+    </div>
+
+    <div class="settings">
+      <h3>Extension Settings</h3>
+      
+      <div class="form-group">
+        <label for="apiUrl">API URL</label>
+        <input type="text" id="apiUrl" placeholder="https://your-app.com/api">
+      </div>
+
+      <div class="form-group">
+        <label for="authToken">Authentication Token</label>
+        <input type="password" id="authToken" placeholder="Your auth token">
+      </div>
+
+      <button class="btn" id="saveBtn">Save Settings</button>
+    </div>
+
+    <div class="link">
+      <a href="#" id="dashboardLink" target="_blank">Open Dashboard →</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

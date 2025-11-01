@@ -32,12 +32,18 @@ distractionSites = [...defaultDistractionSites];
 
 // Keep service worker alive with periodic alarm
 chrome.alarms.create('keepAlive', { periodInMinutes: 1 });
+chrome.alarms.create('refreshRules', { periodInMinutes: 30 }); // Auto-refresh rules every 30 minutes
 
 // Single alarm listener for all alarm types
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'keepAlive') {
     // Check for long distraction sessions
     checkForLongDistraction();
+  } else if (alarm.name === 'refreshRules') {
+    // Auto-refresh categorization rules every 30 minutes
+    if (apiUrl && authToken) {
+      fetchCategorizationRules();
+    }
   } else if (alarm.name === 'pomodoroTick' && pomodoroActive) {
     pomodoroTimeLeft--;
     

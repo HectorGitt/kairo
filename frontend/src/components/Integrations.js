@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
-import { Calendar, MessageSquare, Activity, FileText, Chrome, ArrowRight, CheckCircle, XCircle, RefreshCw, Settings, BarChart3 } from "lucide-react";
+import { Calendar, MessageSquare, Activity, FileText, Chrome, ArrowRight, CheckCircle, XCircle, RefreshCw, Settings, BarChart3, Globe } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import SharedNav from "@/components/SharedNav";
@@ -27,7 +27,68 @@ const INTEGRATIONS = [
       "Real-time distraction detection",
       "Gentle nudges to refocus",
       "Zero manual input required"
-    ]
+    ],
+    status: "available"
+  },
+  {
+    id: "edge_extension",
+    name: "Edge Extension",
+    icon: Globe,
+    color: "#0078d4",
+    description: "Track browsing activity in Microsoft Edge, detect distractions, and receive real-time focus nudges.",
+    permissions: [
+      "Read active tab information (URL, title, domain)",
+      "Track time spent on websites",
+      "Monitor tab switching behavior",
+      "Send browser notifications"
+    ],
+    benefits: [
+      "Automatic focus tracking on Edge",
+      "Real-time distraction detection",
+      "Gentle nudges to refocus",
+      "Seamless Microsoft ecosystem integration"
+    ],
+    status: "preview"
+  },
+  {
+    id: "firefox_extension",
+    name: "Firefox Extension",
+    icon: Globe,
+    color: "#ff7139",
+    description: "Track browsing activity in Firefox, detect distractions, and receive real-time focus nudges.",
+    permissions: [
+      "Read active tab information (URL, title, domain)",
+      "Track time spent on websites",
+      "Monitor tab switching behavior",
+      "Send browser notifications"
+    ],
+    benefits: [
+      "Automatic focus tracking on Firefox",
+      "Real-time distraction detection",
+      "Privacy-focused browser support",
+      "Zero manual input required"
+    ],
+    status: "preview"
+  },
+  {
+    id: "safari_extension",
+    name: "Safari Extension",
+    icon: Globe,
+    color: "#006cff",
+    description: "Track browsing activity in Safari, detect distractions, and receive real-time focus nudges on Mac and iOS.",
+    permissions: [
+      "Read active tab information (URL, title, domain)",
+      "Track time spent on websites",
+      "Monitor tab switching behavior",
+      "Send browser notifications"
+    ],
+    benefits: [
+      "Automatic focus tracking on Safari",
+      "Mac and iOS device support",
+      "Apple ecosystem integration",
+      "Privacy-first tracking"
+    ],
+    status: "preview"
   },
   {
     id: "notion",
@@ -46,7 +107,8 @@ const INTEGRATIONS = [
       "Track time per project",
       "Deadline-aware focus planning",
       "Productivity per project insights"
-    ]
+    ],
+    status: "preview"
   },
   {
     id: "google_calendar",
@@ -65,7 +127,8 @@ const INTEGRATIONS = [
       "Block meeting-free time",
       "Sync focus data to calendar",
       "Team visibility for deep work"
-    ]
+    ],
+    status: "preview"
   },
   {
     id: "slack",
@@ -84,7 +147,8 @@ const INTEGRATIONS = [
       "Mute notifications during deep work",
       "Team awareness of focus time",
       "Reduce interruptions"
-    ]
+    ],
+    status: "preview"
   },
   {
     id: "google_fit",
@@ -103,7 +167,8 @@ const INTEGRATIONS = [
       "Track energy levels",
       "Identify optimal focus times",
       "Holistic productivity insights"
-    ]
+    ],
+    status: "preview"
   }
 ];
 

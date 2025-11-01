@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, X, Sparkles, Save, CheckCircle, Edit2, ChevronRight, ChevronLeft } from "lucide-react";
+import { Plus, X, Sparkles, Save, CheckCircle, Edit2, ChevronRight, ChevronLeft, Activity, Target, Award, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import SharedNav from "@/components/SharedNav";

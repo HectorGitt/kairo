@@ -85,7 +85,11 @@ async function fetchCategorizationRules() {
 // Listen for storage changes
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.apiUrl) apiUrl = changes.apiUrl.newValue;
-  if (changes.authToken) authToken = changes.authToken.newValue;
+  if (changes.authToken) {
+    authToken = changes.authToken.newValue;
+    if (authToken) fetchCategorizationRules(); // Refresh rules when token changes
+  }
+  if (changes.focusMode) focusMode = changes.focusMode.newValue;
 });
 
 // Categorize URL

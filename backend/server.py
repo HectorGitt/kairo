@@ -565,6 +565,110 @@ async def get_goals(current_user: User = Depends(get_current_user)):
     
     return goals
 
+# ==================== INTEGRATIONS ROUTES ====================
+
+@api_router.get("/integrations", response_model=List[Integration])
+async def get_integrations(current_user: User = Depends(get_current_user)):
+    """Get all integrations for the user"""
+    integrations = await db.integrations.find(
+        {"user_id": current_user.id},
+        {"_id": 0}
+    ).to_list(100)
+    
+    for integration in integrations:
+        if isinstance(integration.get('created_at'), str):
+            integration['created_at'] = datetime.fromisoformat(integration['created_at'])
+        if integration.get('connected_at') and isinstance(integration['connected_at'], str):
+            integration['connected_at'] = datetime.fromisoformat(integration['connected_at'])
+        if integration.get('last_synced') and isinstance(integration['last_synced'], str):
+            integration['last_synced'] = datetime.fromisoformat(integration['last_synced'])
+    
+    return integrations
+
+@api_router.post("/integrations/connect")
+async def connect_integration(
+    data: IntegrationConnect,
+    current_user: User = Depends(get_current_user)
+):
+    """Connect a new integration"""
+    # Check if integration already exists
+    existing = await db.integrations.find_one({
+        "user_id": current_user.id,
+        "integration_type": data.integration_type
+    })
+    
+    if existing:
+        # Update existing
+        await db.integrations.update_one(
+            {"user_id": current_user.id, "integration_type": data.integration_type},
+            {"$set": {
+                "status": "connected",
+                "credentials": data.credentials,
+                "settings": data.settings,
+                "connected_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        return {"message": "Integration updated successfully"}
+    
+    # Create new integration
+    integration = Integration(
+        user_id=current_user.id,
+        integration_type=data.integration_type,
+        status="connected",
+        credentials=data.credentials,
+        settings=data.settings,
+        connected_at=datetime.now(timezone.utc)
+    )
+    
+    integration_doc = integration.model_dump()
+    integration_doc['created_at'] = integration_doc['created_at'].isoformat()
+    integration_doc['connected_at'] = integration_doc['connected_at'].isoformat()
+    
+    await db.integrations.insert_one(integration_doc)
+    return {"message": "Integration connected successfully"}
+
+@api_router.post("/integrations/{integration_type}/disconnect")
+async def disconnect_integration(
+    integration_type: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Disconnect an integration"""
+    result = await db.integrations.update_one(
+        {"user_id": current_user.id, "integration_type": integration_type},
+        {"$set": {"status": "disconnected", "connected_at": None}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Integration not found")
+    
+    return {"message": "Integration disconnected successfully"}
+
+@api_router.get("/integrations/{integration_type}/data")
+async def get_integration_data(
+    integration_type: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get data for a specific integration dashboard"""
+    integration = await db.integrations.find_one({
+        "user_id": current_user.id,
+        "integration_type": integration_type
+    }, {"_id": 0})
+    
+    if not integration or integration['status'] != 'connected':
+        raise HTTPException(status_code=404, detail="Integration not connected")
+    
+    # Return mock data for now - in production, this would call actual APIs
+    return {
+        "integration_type": integration_type,
+        "status": "connected",
+        "data": {
+            "tasks_completed": 12,
+            "focus_sessions": 8,
+            "last_sync": integration.get('last_synced', 'Never'),
+            "stats": {}
+        }
+    }
+
 # ==================== EXTENSION DOWNLOAD ====================
 
 @api_router.get("/extension/download")

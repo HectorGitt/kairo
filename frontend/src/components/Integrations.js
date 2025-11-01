@@ -132,6 +132,18 @@ function Integrations({ user, token, onLogout }) {
     }
   };
 
+  const checkChromeExtension = async () => {
+    try {
+      const response = await axios.get(`${API}/browsing/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // If we have sessions, extension is connected
+      setChromeConnected(response.data.session_count > 0);
+    } catch (error) {
+      console.error("Error checking chrome extension:", error);
+    }
+  };
+
   const handleConnect = async (integrationType) => {
     if (integrationType === "chrome_extension") {
       navigate("/extension-setup");

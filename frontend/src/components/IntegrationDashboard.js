@@ -173,6 +173,89 @@ function IntegrationDashboard({ user, token, onLogout }) {
           })}
         </div>
 
+        {/* Chrome Extension Management Section */}
+        {integrationId === "chrome_extension" && (
+          <div className="glassmorphism" style={{
+            padding: "2rem",
+            borderRadius: "20px",
+            marginBottom: "2rem",
+            background: "linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(56, 189, 248, 0.05) 100%)",
+            border: "2px solid rgba(14, 165, 233, 0.2)"
+          }}>
+            <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a", marginBottom: "1.5rem" }}>Extension Management</h3>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+              <div style={{ background: "white", padding: "1.5rem", borderRadius: "16px" }}>
+                <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.75rem" }}>
+                  Download Latest Version
+                </h4>
+                <p style={{ color: "#64748b", fontSize: "0.875rem", marginBottom: "1rem", lineHeight: "1.6" }}>
+                  Get the latest version of the Kairo extension with your personalized rules and latest features.
+                </p>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const link = document.createElement('a');
+                      link.href = `${API}/extension/download`;
+                      link.download = 'kairo-extension.zip';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      toast.success("Extension downloaded successfully!");
+                    } catch (error) {
+                      console.error('Download failed:', error);
+                      toast.error('Failed to download extension');
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                    borderRadius: "10px",
+                    padding: "0.75rem"
+                  }}
+                >
+                  <Download size={16} style={{ marginRight: "0.5rem" }} />
+                  Download Extension
+                </Button>
+              </div>
+
+              <div style={{ background: "white", padding: "1.5rem", borderRadius: "16px" }}>
+                <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.75rem" }}>
+                  Setup & Configuration
+                </h4>
+                <p style={{ color: "#64748b", fontSize: "0.875rem", marginBottom: "1rem", lineHeight: "1.6" }}>
+                  View detailed installation instructions and configure your extension settings.
+                </p>
+                <Button
+                  onClick={() => navigate("/extension-setup")}
+                  variant="outline"
+                  style={{
+                    width: "100%",
+                    borderRadius: "10px",
+                    border: "2px solid #e2e8f0",
+                    padding: "0.75rem"
+                  }}
+                >
+                  <SettingsIcon size={16} style={{ marginRight: "0.5rem" }} />
+                  Setup Instructions
+                </Button>
+              </div>
+            </div>
+
+            <div style={{
+              marginTop: "1.5rem",
+              padding: "1rem 1.5rem",
+              background: "rgba(14, 165, 233, 0.05)",
+              borderRadius: "12px",
+              border: "1px solid rgba(14, 165, 233, 0.1)"
+            }}>
+              <p style={{ color: "#0284c7", fontSize: "0.875rem", lineHeight: "1.6", margin: 0 }}>
+                💡 <strong>Tip:</strong> After updating your profile or custom rules, download the extension again to sync the latest personalized categorization rules.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Recent Activity */}
         <div className="glassmorphism" style={{
           padding: "2rem",

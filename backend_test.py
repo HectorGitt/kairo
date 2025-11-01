@@ -289,6 +289,133 @@ class KairoAPITester:
         self.token = original_token
         return success
 
+    def test_extension_download(self):
+        """Test extension download endpoint (HIGH PRIORITY)"""
+        print("   Testing extension download endpoint...")
+        url = f"{self.base_url}/extension/download"
+        
+        try:
+            response = requests.get(url, timeout=30)
+            
+            if response.status_code == 200:
+                # Check content type
+                content_type = response.headers.get('content-type', '')
+                if 'application/zip' in content_type or 'application/octet-stream' in content_type:
+                    # Check content disposition
+                    content_disposition = response.headers.get('content-disposition', '')
+                    if 'kairo-extension.zip' in content_disposition or len(response.content) > 0:
+                        self.log_test("Extension Download", True, f"Downloaded {len(response.content)} bytes")
+                        return True
+                    else:
+                        self.log_test("Extension Download", False, f"Invalid content disposition: {content_disposition}")
+                        return False
+                else:
+                    self.log_test("Extension Download", False, f"Invalid content type: {content_type}")
+                    return False
+            else:
+                self.log_test("Extension Download", False, f"HTTP {response.status_code}: {response.text[:200]}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Extension Download", False, f"Request error: {str(e)}")
+            return False
+
+    def test_profile_get(self):
+        """Test getting user profile"""
+        if not self.token:
+            self.log_test("Get Profile", False, "No auth token available")
+            return False
+            
+        success, response = self.run_test(
+            "Get User Profile",
+            "GET",
+            "profile",
+            200
+        )
+        
+        if success:
+            print(f"   Profile data: {json.dumps(response, indent=2)}")
+        return success
+
+    def test_profile_update(self):
+        """Test updating user profile"""
+        if not self.token:
+            self.log_test("Update Profile", False, "No auth token available")
+            return False
+            
+        profile_data = {
+            "profession": "Software Developer",
+            "work_focus": ["web development", "API design"],
+            "important_sites": [
+                {"domain": "github.com", "category": "productive", "reason": "Code repository"},
+                {"domain": "stackoverflow.com", "category": "productive", "reason": "Technical help"}
+            ],
+            "interests": ["technology", "programming"],
+            "learning_goals": ["FastAPI", "React"]
+        }
+        
+        success, response = self.run_test(
+            "Update User Profile",
+            "POST",
+            "profile",
+            200,
+            data=profile_data
+        )
+        return success
+
+    def test_categorization_rules(self):
+        """Test getting categorization rules"""
+        if not self.token:
+            self.log_test("Categorization Rules", False, "No auth token available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Categorization Rules",
+            "GET",
+            "profile/categorization-rules",
+            200
+        )
+        
+        if success:
+            print(f"   Rules: {json.dumps(response, indent=2)}")
+            # Verify expected structure
+            if 'productive' in response and 'distraction' in response:
+                self.log_test("Categorization Rules Structure", True, "Contains productive and distraction arrays")
+            else:
+                self.log_test("Categorization Rules Structure", False, "Missing expected structure")
+        return success
+
+    def test_weekly_summary(self):
+        """Test getting weekly summary"""
+        if not self.token:
+            self.log_test("Weekly Summary", False, "No auth token available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Weekly Summary",
+            "GET",
+            "browsing/weekly-summary",
+            200
+        )
+        
+        if success:
+            print(f"   Weekly summary: {json.dumps(response, indent=2)}")
+        return success
+
+    def test_integrations_list(self):
+        """Test getting integrations list"""
+        if not self.token:
+            self.log_test("Integrations List", False, "No auth token available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Integrations",
+            "GET",
+            "integrations",
+            200
+        )
+        return success
+
     def run_all_tests(self):
         """Run all API tests"""
         print("🚀 Starting Kairo API Tests")

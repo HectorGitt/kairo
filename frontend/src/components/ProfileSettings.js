@@ -655,6 +655,246 @@ function ProfileSettings({ user, token, onLogout }) {
             )}
           </div>
         )}
+
+        {/* Categorization Rules Section */}
+        {categorizationRules && !editing && (
+          <div className="glassmorphism" style={{ padding: "2.5rem", borderRadius: "20px", marginBottom: "2rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+              <div>
+                <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.5rem" }}>
+                  Your Categorization Rules
+                </h3>
+                <p style={{ color: "#64748b", fontSize: "0.9375rem" }}>
+                  {categorizationRules.profile_set 
+                    ? `Active rules based on your profile as ${profession || "your role"}`
+                    : "Default rules (set up your profile for personalization)"
+                  }
+                </p>
+              </div>
+              {categorizationRules.profile_set && (
+                <Button
+                  onClick={() => navigate("/profile")}
+                  variant="outline"
+                  style={{ borderRadius: "10px", border: "2px solid #e2e8f0", padding: "0.625rem 1.25rem" }}
+                >
+                  <Edit2 size={16} style={{ marginRight: "0.5rem" }} />
+                  Edit Rules
+                </Button>
+              )}
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1.5rem" }}>
+              {/* Productive Sites */}
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#22c55e" }}></div>
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a" }}>
+                    Productive ({categorizationRules.productive?.length || 0})
+                  </h4>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", maxHeight: "300px", overflowY: "auto" }}>
+                  {categorizationRules.productive?.slice(0, 10).map((site, index) => (
+                    <div key={index} style={{
+                      background: "#f0fdf4",
+                      padding: "0.625rem 0.875rem",
+                      borderRadius: "8px",
+                      fontSize: "0.875rem",
+                      color: "#166534",
+                      border: "1px solid #bbf7d0"
+                    }}>
+                      {site}
+                    </div>
+                  ))}
+                  {categorizationRules.productive?.length > 10 && (
+                    <p style={{ fontSize: "0.8125rem", color: "#64748b", fontStyle: "italic", padding: "0.5rem" }}>
+                      +{categorizationRules.productive.length - 10} more...
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Distraction Sites */}
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#ef4444" }}></div>
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a" }}>
+                    Distractions ({categorizationRules.distraction?.length || 0})
+                  </h4>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", maxHeight: "300px", overflowY: "auto" }}>
+                  {categorizationRules.distraction?.map((site, index) => (
+                    <div key={index} style={{
+                      background: "#fef2f2",
+                      padding: "0.625rem 0.875rem",
+                      borderRadius: "8px",
+                      fontSize: "0.875rem",
+                      color: "#991b1b",
+                      border: "1px solid #fecaca"
+                    }}>
+                      {site}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom Rules */}
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#8b5cf6" }}></div>
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a" }}>
+                    Custom Rules ({categorizationRules.custom_sites?.length || 0})
+                  </h4>
+                </div>
+                {categorizationRules.custom_sites?.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                    {categorizationRules.custom_sites.map((site, index) => (
+                      <div key={index} style={{
+                        background: "#faf5ff",
+                        padding: "0.75rem",
+                        borderRadius: "10px",
+                        border: "1px solid #e9d5ff"
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
+                          <strong style={{ fontSize: "0.875rem", color: "#6b21a8" }}>{site.domain}</strong>
+                          <span style={{
+                            background: site.category === "productive" ? "#dcfce7" : "#fee2e2",
+                            color: site.category === "productive" ? "#16a34a" : "#dc2626",
+                            padding: "0.125rem 0.375rem",
+                            borderRadius: "8px",
+                            fontSize: "0.6875rem",
+                            fontWeight: "600",
+                            textTransform: "uppercase"
+                          }}>
+                            {site.category}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: "0.8125rem", color: "#7c3aed", lineHeight: "1.4" }}>{site.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: "0.875rem", color: "#94a3b8", fontStyle: "italic" }}>
+                    No custom rules yet. Edit your profile to add site-specific rules.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {!categorizationRules.profile_set && (
+              <div style={{
+                marginTop: "1.5rem",
+                padding: "1rem 1.5rem",
+                background: "linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(56, 189, 248, 0.05) 100%)",
+                borderRadius: "12px",
+                border: "2px solid rgba(14, 165, 233, 0.2)"
+              }}>
+                <p style={{ color: "#0284c7", fontSize: "0.9375rem", lineHeight: "1.6", margin: 0 }}>
+                  💡 <strong>Tip:</strong> Set up your profile to get personalized categorization! Sites like Twitter can be productive for social media managers but distracting for developers.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Attention Health Tips */}
+        {!editing && (
+          <div className="glassmorphism" style={{
+            padding: "2.5rem",
+            borderRadius: "20px",
+            background: "linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%)",
+            border: "2px solid rgba(139, 92, 246, 0.2)"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
+              <Activity size={28} style={{ color: "#8b5cf6" }} />
+              <div>
+                <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a" }}>
+                  Boost Your Attention Health Score
+                </h3>
+                <p style={{ color: "#64748b", fontSize: "0.9375rem" }}>
+                  Your attention health score combines focus, consistency, streaks, and improvement
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+              {/* Focus Score Tips */}
+              <div style={{ background: "white", padding: "1.5rem", borderRadius: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <Target size={20} style={{ color: "#22c55e" }} />
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a" }}>
+                    Focus Score (40% weight)
+                  </h4>
+                </div>
+                <ul style={{ paddingLeft: "1.25rem", margin: 0, color: "#64748b", fontSize: "0.875rem", lineHeight: "1.8" }}>
+                  <li>Spend more time on productive sites</li>
+                  <li>Set up custom rules for your work sites</li>
+                  <li>Use focus mode to block distractions</li>
+                  <li>Track activities relevant to your goals</li>
+                </ul>
+              </div>
+
+              {/* Consistency Tips */}
+              <div style={{ background: "white", padding: "1.5rem", borderRadius: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <CheckCircle size={20} style={{ color: "#3b82f6" }} />
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a" }}>
+                    Consistency (30% weight)
+                  </h4>
+                </div>
+                <ul style={{ paddingLeft: "1.25rem", margin: 0, color: "#64748b", fontSize: "0.875rem", lineHeight: "1.8" }}>
+                  <li>Track your focus every day</li>
+                  <li>Install and use the Chrome extension</li>
+                  <li>Build a daily routine around focus</li>
+                  <li>Even 30 min/day counts!</li>
+                </ul>
+              </div>
+
+              {/* Streak Tips */}
+              <div style={{ background: "white", padding: "1.5rem", borderRadius: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <Award size={20} style={{ color: "#f59e0b" }} />
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a" }}>
+                    Streaks (20% weight)
+                  </h4>
+                </div>
+                <ul style={{ paddingLeft: "1.25rem", margin: 0, color: "#64748b", fontSize: "0.875rem", lineHeight: "1.8" }}>
+                  <li>Maintain consecutive days with 60%+ focus</li>
+                  <li>Use Pomodoro timer in extension</li>
+                  <li>Set daily focus goals</li>
+                  <li>Streaks compound motivation!</li>
+                </ul>
+              </div>
+
+              {/* Improvement Tips */}
+              <div style={{ background: "white", padding: "1.5rem", borderRadius: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <TrendingUp size={20} style={{ color: "#8b5cf6" }} />
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a" }}>
+                    Improvement (10% weight)
+                  </h4>
+                </div>
+                <ul style={{ paddingLeft: "1.25rem", margin: 0, color: "#64748b", fontSize: "0.875rem", lineHeight: "1.8" }}>
+                  <li>Track week-over-week progress</li>
+                  <li>Review AI insights regularly</li>
+                  <li>Identify distraction patterns</li>
+                  <li>Small improvements add up!</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style={{
+              marginTop: "1.5rem",
+              padding: "1.25rem 1.5rem",
+              background: "rgba(139, 92, 246, 0.1)",
+              borderRadius: "12px",
+              border: "1px solid rgba(139, 92, 246, 0.2)"
+            }}>
+              <p style={{ color: "#7c3aed", fontSize: "0.9375rem", lineHeight: "1.7", margin: 0, fontWeight: "500" }}>
+                🎯 <strong>Pro Tip:</strong> Your attention health score updates daily. Focus on consistency over perfection – showing up every day matters more than occasional perfect days!
+              </p>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

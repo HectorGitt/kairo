@@ -256,17 +256,20 @@ frontend:
         agent: "main"
         comment: "Added Cancel button to step 1 of manual profile form. Resets editing state and restores original profile data when clicked."
 
-  - task: "Update auto-sync messaging"
+  - task: "Fix custom rules not syncing to extension"
     implemented: true
     working: "unknown"
-    file: "/app/frontend/src/components/ProfileSettings.js,/app/frontend/src/components/IntegrationDashboard.js"
+    file: "/app/backend/server.py"
     stuck_count: 0
-    priority: "low"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported: Twitter was added as custom rule but not showing in extension log (custom: 0)"
       - working: "unknown"
         agent: "main"
-        comment: "Updated tip messages to reflect that rules sync automatically via 'Refresh Personalization Rules' button in extension, not by re-downloading extension."
+        comment: "Fixed backend logic in /profile/categorization-rules endpoint. Issue was that custom_sites array only populated productive sites, ignored distraction/neutral. Now all custom sites are included in custom_sites array AND added to main lists for backward compatibility."
 
 metadata:
   created_by: "main_agent"

@@ -755,11 +755,14 @@ async def get_categorization_rules(current_user: User = Depends(get_current_user
         domain = site['domain']
         category = site['category']
         
+        # Add to custom_sites for extension to use
+        custom_sites.append(site)
+        
+        # Also add to main lists for backward compatibility
         if category == 'productive' and domain not in productive_sites:
             productive_sites.append(domain)
-            custom_sites.append(site)
-        elif category == 'distraction' and domain in distraction_sites:
-            distraction_sites.remove(domain)
+        elif category == 'distraction' and domain not in distraction_sites:
+            distraction_sites.append(domain)
     
     return {
         "productive": productive_sites,

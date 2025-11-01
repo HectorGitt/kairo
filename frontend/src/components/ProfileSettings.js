@@ -400,16 +400,16 @@ function ProfileSettings({ user, token, onLogout }) {
                   </div>
                 )}
 
-                {/* Step 2: Work Focus & Sites */}
+                {/* Step 2: Work Focus */}
                 {currentStep === 2 && (
                   <div>
                     <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
-                      Step 2: Work Details
+                      Step 2: Work Focus Areas
                     </h3>
                     
-                    <div style={{ marginBottom: "1.5rem" }}>
+                    <div style={{ marginBottom: "2rem" }}>
                       <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
-                        Work Focus Areas
+                        What are your main work focus areas?
                       </Label>
                       <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
                         <Input
@@ -442,10 +442,132 @@ function ProfileSettings({ user, token, onLogout }) {
                       </div>
                     </div>
 
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <Button
+                        onClick={() => {
+                          setEditing(false);
+                          setCurrentStep(1);
+                          setProfession(profile?.profession || "");
+                          setWorkFocus(profile?.work_focus || []);
+                          setImportantSites(profile?.important_sites || []);
+                          setInterests(profile?.interests || []);
+                        }}
+                        variant="outline"
+                        style={{ flex: 1, padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => setCurrentStep(1)}
+                        variant="outline"
+                        style={{ flex: 1, padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                      >
+                        <ChevronLeft size={18} style={{ marginRight: "0.5rem" }} />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={() => setCurrentStep(3)}
+                        style={{
+                          flex: 1,
+                          padding: "0.875rem",
+                          background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                          borderRadius: "10px"
+                        }}
+                      >
+                        Next Step
+                        <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Interests */}
+                {currentStep === 3 && (
+                  <div>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
+                      Step 3: Personal Interests
+                    </h3>
+                    
                     <div style={{ marginBottom: "2rem" }}>
                       <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
-                        Custom Site Rules
+                        What are you interested in?
                       </Label>
+                      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                        <Input
+                          value={newInterest}
+                          onChange={(e) => setNewInterest(e.target.value)}
+                          placeholder="e.g., Photography, Gaming"
+                          onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddInterest())}
+                          style={{ flex: 1, padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                        />
+                        <Button onClick={handleAddInterest} style={{ padding: "0.75rem", borderRadius: "10px" }}>
+                          <Plus size={18} />
+                        </Button>
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                        {interests.map((interest, index) => (
+                          <span key={index} style={{
+                            background: "#f0fdf4",
+                            color: "#16a34a",
+                            padding: "0.5rem 0.75rem",
+                            borderRadius: "20px",
+                            fontSize: "0.875rem",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem"
+                          }}>
+                            {interest}
+                            <X size={14} style={{ cursor: "pointer" }} onClick={() => handleRemoveInterest(index)} />
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <Button
+                        onClick={() => {
+                          setEditing(false);
+                          setCurrentStep(1);
+                          setProfession(profile?.profession || "");
+                          setWorkFocus(profile?.work_focus || []);
+                          setImportantSites(profile?.important_sites || []);
+                          setInterests(profile?.interests || []);
+                        }}
+                        variant="outline"
+                        style={{ flex: 1, padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => setCurrentStep(2)}
+                        variant="outline"
+                        style={{ flex: 1, padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                      >
+                        <ChevronLeft size={18} style={{ marginRight: "0.5rem" }} />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={() => setCurrentStep(4)}
+                        style={{
+                          flex: 1,
+                          padding: "0.875rem",
+                          background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                          borderRadius: "10px"
+                        }}
+                      >
+                        Next Step
+                        <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 4: Custom Site Rules & Save */}
+                {currentStep === 4 && (
+                  <div>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
+                      Step 4: Custom Site Rules
+                    </h3>
                       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 2fr auto", gap: "0.5rem", marginBottom: "0.75rem" }}>
                         <Input
                           value={newSite.domain}

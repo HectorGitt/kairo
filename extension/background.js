@@ -193,6 +193,9 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   const tab = await chrome.tabs.get(activeInfo.tabId);
   currentTab = tab;
   startTime = Date.now();
+  
+  // Check focus mode
+  checkFocusMode(tab);
 });
 
 // Track tab updates (URL changes)

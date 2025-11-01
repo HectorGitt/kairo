@@ -196,7 +196,35 @@ function IntegrationDashboard({ user, token, onLogout }) {
           gap: "1.5rem",
           marginBottom: "2rem"
         }}>
-          {integration.metrics.map((metric, index) => {
+          {(() => {
+            // Real metrics for browser extensions
+            const browserExtensions = ['chrome_extension', 'edge_extension', 'firefox_extension', 'safari_extension'];
+            const isBrowserExtension = browserExtensions.includes(integrationId);
+
+            let displayMetrics = [];
+            
+            if (isBrowserExtension && stats) {
+              // Use real data from backend
+              const focusRatio = stats.total_time > 0 
+                ? Math.round((stats.focus_time / stats.total_time) * 100) 
+                : 0;
+              const peakHour = weeklyData?.peak_hours?.[0]?.hour || 0;
+              const attentionScore = weeklyData?.attention_health || 0;
+
+              displayMetrics = [
+                { label: "Focus Time Today", value: formatTime(stats.focus_time || 0), icon: Clock },
+                { label: "Distraction Time", value: formatTime(stats.distraction_time || 0), icon: Activity },
+                { label: "Focus Ratio", value: `${focusRatio}%`, icon: Target },
+                { label: "Context Switches", value: stats.context_switches || 0, icon: TrendingUp },
+                { label: "Peak Hour", value: formatHour(peakHour), icon: Clock },
+                { label: "Attention Health", value: `${attentionScore}/100`, icon: CheckCircle }
+              ];
+            } else {
+              // Placeholder metrics for non-browser integrations
+              displayMetrics = integration.metrics || [];
+            }
+
+            return displayMetrics.map((metric, index) => {
             const MetricIcon = metric.icon;
             return (
               <div key={index} className="glassmorphism card-hover" style={{

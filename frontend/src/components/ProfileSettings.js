@@ -315,7 +315,7 @@ function ProfileSettings({ user, token, onLogout }) {
               <div>
                 {/* Step Indicator */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
-                  {[1, 2, 3].map((step) => (
+                  {[1, 2, 3, 4].map((step) => (
                     <div key={step} style={{ display: "flex", alignItems: "center" }}>
                       <div style={{
                         width: "40px",
@@ -330,7 +330,7 @@ function ProfileSettings({ user, token, onLogout }) {
                       }}>
                         {step}
                       </div>
-                      {step < 3 && (
+                      {step < 4 && (
                         <div style={{
                           width: "60px",
                           height: "3px",

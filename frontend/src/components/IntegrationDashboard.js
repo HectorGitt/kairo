@@ -113,7 +113,6 @@ function IntegrationDashboard({ user, token, onLogout }) {
     return `${displayHour} ${period}`;
   };
   const [integrationData, setIntegrationData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const integration = INTEGRATION_DETAILS[integrationId];
   const IntegrationIcon = integration?.icon;

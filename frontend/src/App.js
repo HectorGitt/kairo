@@ -11,6 +11,7 @@ import Integrations from "@/components/Integrations";
 import IntegrationDashboard from "@/components/IntegrationDashboard";
 import ProfileSetup from "@/components/ProfileSetup";
 import ProfileSettings from "@/components/ProfileSettings";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;

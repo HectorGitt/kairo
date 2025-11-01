@@ -802,7 +802,7 @@ function ProfileSettings({ user, token, onLogout }) {
                   onClick={() => {
                     setEditing(true);
                     setUseAI(false);
-                    setCurrentStep(2); // Jump directly to rules section
+                    setCurrentStep(4); // Jump directly to custom rules section (step 4)
                   }}
                   variant="outline"
                   style={{ borderRadius: "10px", border: "2px solid #e2e8f0", padding: "0.625rem 1.25rem" }}

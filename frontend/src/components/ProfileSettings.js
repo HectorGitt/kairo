@@ -21,6 +21,8 @@ function ProfileSettings({ user, token, onLogout }) {
   const [editing, setEditing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [useAI, setUseAI] = useState(false);
+  const [categorizationRules, setCategorizationRules] = useState(null);
+  const [editingRules, setEditingRules] = useState(false);
   
   // Form state
   const [profession, setProfession] = useState("");

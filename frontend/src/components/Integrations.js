@@ -112,9 +112,11 @@ function Integrations({ user, token, onLogout }) {
   const [integrations, setIntegrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedIntegration, setSelectedIntegration] = useState(null);
+  const [chromeConnected, setChromeConnected] = useState(false);
 
   useEffect(() => {
     fetchIntegrations();
+    checkChromeExtension();
   }, []);
 
   const fetchIntegrations = async () => {

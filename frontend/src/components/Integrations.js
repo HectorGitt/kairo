@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
-import { Brain, LogOut, Calendar, MessageSquare, Activity, FileText, Chrome, ArrowRight, CheckCircle, XCircle, RefreshCw, Settings, BarChart3 } from "lucide-react";
+import { Calendar, MessageSquare, Activity, FileText, Chrome, ArrowRight, CheckCircle, XCircle, RefreshCw, Settings, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import SharedNav from "@/components/SharedNav";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;

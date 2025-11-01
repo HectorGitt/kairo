@@ -86,8 +86,7 @@ saveBtn.addEventListener('click', () => {
     const baseUrl = apiUrl.replace('/api', '');
     dashboardLink.href = `${baseUrl}/dashboard`;
     
-    // Refresh personalization rules
-    chrome.runtime.sendMessage({ action: 'refreshRules' });
+    // Rules will auto-refresh via alarm system in background
     
     // Load stats
     loadStats();

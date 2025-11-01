@@ -284,7 +284,7 @@ function Integrations({ user, token, onLogout }) {
                         style={{ color: integration.color }}
                       >
                         <BarChart3 size={16} style={{ marginRight: "0.375rem" }} />
-                        View Dashboard
+                        Dashboard & Settings
                       </Button>
                     )}
                   </div>

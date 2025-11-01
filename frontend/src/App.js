@@ -106,6 +106,12 @@ function App() {
               user ? <IntegrationDashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
             } 
           />
+          <Route 
+            path="/profile-setup" 
+            element={
+              user ? <ProfileSetup user={user} token={token} /> : <Navigate to="/" />
+            } 
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />

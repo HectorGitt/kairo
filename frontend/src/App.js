@@ -113,6 +113,12 @@ function App() {
               user ? <ProfileSetup user={user} token={token} /> : <Navigate to="/" />
             } 
           />
+          <Route 
+            path="/profile" 
+            element={
+              user ? <ProfileSettings user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            } 
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />

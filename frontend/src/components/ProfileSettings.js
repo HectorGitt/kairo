@@ -359,21 +359,44 @@ function ProfileSettings({ user, token, onLogout }) {
                         style={{ padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0", fontSize: "1rem" }}
                       />
                     </div>
-                    <Button
-                      onClick={() => setCurrentStep(2)}
-                      disabled={!profession.trim()}
-                      style={{
-                        width: "100%",
-                        padding: "0.875rem",
-                        background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-                        borderRadius: "10px",
-                        fontSize: "1rem",
-                        fontWeight: "600"
-                      }}
-                    >
-                      Next Step
-                      <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
-                    </Button>
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <Button
+                    onClick={() => {
+                      setEditing(false);
+                      setCurrentStep(1);
+                      // Reset form to current profile data
+                      setProfession(profile?.profession || "");
+                      setWorkFocus(profile?.work_focus || []);
+                      setImportantSites(profile?.important_sites || []);
+                      setInterests(profile?.interests || []);
+                    }}
+                    variant="outline"
+                    style={{
+                      flex: 1,
+                      padding: "0.875rem",
+                      borderRadius: "10px",
+                      border: "2px solid #e2e8f0"
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentStep(2)}
+                    disabled={!profession.trim()}
+                    style={{
+                      flex: 1,
+                      width: "100%",
+                      padding: "0.875rem",
+                      background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                      borderRadius: "10px",
+                      fontSize: "1rem",
+                      fontWeight: "600"
+                    }}
+                  >
+                    Next Step
+                    <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
+                  </Button>
+                </div>
                   </div>
                 )}
 

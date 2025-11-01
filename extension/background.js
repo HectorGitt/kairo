@@ -239,11 +239,72 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
   }
 });
 
-// Periodic save (every 2 minutes)
-chrome.alarms.create('saveSession', { periodInMinutes: 2 });
+// Pomodoro timer functionality
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'startPomodoro') {
+    startPomodoro(request.duration || 25); // Default 25 minutes
+    sendResponse({ success: true });
+  } else if (request.action === 'stopPomodoro') {
+    stopPomodoro();
+    sendResponse({ success: true });
+  } else if (request.action === 'getPomodoroStatus') {
+    sendResponse({
+      active: pomodoroActive,
+      timeLeft: pomodoroTimeLeft
+    });
+  } else if (request.action === 'toggleFocusMode') {
+    focusMode = !focusMode;
+    chrome.storage.local.set({ focusMode });
+    sendResponse({ focusMode });
+  } else if (request.action === 'getFocusMode') {
+    sendResponse({ focusMode });
+  } else if (request.action === 'refreshRules') {
+    fetchCategorizationRules();
+    sendResponse({ success: true });
+  }
+  return true; // Keep message channel open for async response
+});
+
+function startPomodoro(minutes) {
+  pomodoroActive = true;
+  pomodoroTimeLeft = minutes * 60; // Convert to seconds
+  focusMode = true; // Auto-enable focus mode during pomodoro
+  chrome.storage.local.set({ focusMode: true });
+  
+  // Create alarm for countdown
+  chrome.alarms.create('pomodoroTick', { periodInMinutes: 1/60 }); // Every second
+  
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'icons/icon48.png',
+    title: 'Pomodoro Started',
+    message: `Focus session started! ${minutes} minutes to go.`,
+    priority: 1
+  });
+}
+
+function stopPomodoro() {
+  pomodoroActive = false;
+  pomodoroTimeLeft = 0;
+  chrome.alarms.clear('pomodoroTick');
+  
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'icons/icon48.png',
+    title: 'Pomodoro Completed',
+    message: 'Great work! Time for a break.',
+    priority: 2
+  });
+}
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'saveSession' && currentTab && startTime) {
+  if (alarm.name === 'pomodoroTick' && pomodoroActive) {
+    pomodoroTimeLeft--;
+    
+    if (pomodoroTimeLeft <= 0) {
+      stopPomodoro();
+    }
+  } else if (alarm.name === 'saveSession' && currentTab && startTime) {
     const timeSpent = Date.now() - startTime;
     if (timeSpent > 5000) {
       sendSession(currentTab, timeSpent);
@@ -251,3 +312,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
   }
 });
+
+// Periodic save (every 2 minutes)
+chrome.alarms.create('saveSession', { periodInMinutes: 2 });

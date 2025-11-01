@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Brain, Download, CheckCircle, Chrome, Shield, Eye, Lock, Database } from "lucide-react";
+import { Download, CheckCircle, Chrome, Shield, Eye, Lock, Database } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import SharedNav from "@/components/SharedNav";
 
-function ExtensionSetup({ user, token }) {
+function ExtensionSetup({ user, token, onLogout }) {
   const navigate = useNavigate();
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const API = `${BACKEND_URL}/api`;
@@ -24,36 +25,7 @@ function ExtensionSetup({ user, token }) {
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%)" }}>
       {/* Header */}
-      <header className="glassmorphism" style={{
-        padding: "1.5rem 2rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.3)"
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <Brain size={32} style={{ color: "#0ea5e9" }} />
-          <h1 style={{
-            fontSize: "1.75rem",
-            fontWeight: "700",
-            background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent"
-          }}>Kairo</h1>
-        </div>
-        <Button
-          data-testid="back-to-dashboard-button"
-          onClick={() => navigate("/dashboard")}
-          variant="outline"
-          style={{
-            borderRadius: "10px",
-            border: "2px solid #e2e8f0",
-            padding: "0.5rem 1.25rem"
-          }}
-        >
-          Back to Dashboard
-        </Button>
-      </header>
+      <SharedNav user={user} onLogout={onLogout} />
 
       {/* Main Content */}
       <main style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>

@@ -456,10 +456,20 @@ function ProfileSettings({ user, token, onLogout }) {
                         <select
                           value={newSite.category}
                           onChange={(e) => setNewSite({ ...newSite, category: e.target.value })}
-                          style={{ padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                          style={{ 
+                            padding: "0.75rem", 
+                            borderRadius: "10px", 
+                            border: "2px solid #e2e8f0",
+                            fontSize: "0.875rem",
+                            fontFamily: "inherit",
+                            backgroundColor: "white",
+                            cursor: "pointer",
+                            outline: "none"
+                          }}
                         >
                           <option value="productive">Productive</option>
                           <option value="neutral">Neutral</option>
+                          <option value="distraction">Distraction</option>
                         </select>
                         <Input
                           value={newSite.reason}

@@ -92,6 +92,12 @@ function App() {
               user ? <ExtensionSetup user={user} token={token} /> : <Navigate to="/" />
             } 
           />
+          <Route 
+            path="/integrations" 
+            element={
+              user ? <Integrations user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            } 
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />

@@ -100,6 +100,20 @@ function Dashboard({ user, token, onLogout }) {
           }}>Kairo</h1>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/dashboard")}
+            style={{ color: "#0ea5e9", fontWeight: "600" }}
+          >
+            Dashboard
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/integrations")}
+            style={{ color: "#64748b" }}
+          >
+            Integrations
+          </Button>
           <span style={{ color: "#475569", fontWeight: "500" }}>Hi, {user.username}!</span>
           <Button
             data-testid="logout-button"

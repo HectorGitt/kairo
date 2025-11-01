@@ -114,6 +114,13 @@ function Dashboard({ user, token, onLogout }) {
           >
             Integrations
           </Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/profile")}
+            style={{ color: "#64748b" }}
+          >
+            Profile
+          </Button>
           <span style={{ color: "#475569", fontWeight: "500" }}>Hi, {user.username}!</span>
           <Button
             data-testid="logout-button"

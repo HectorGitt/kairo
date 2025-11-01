@@ -38,6 +38,7 @@ function ProfileSettings({ user, token, onLogout }) {
 
   useEffect(() => {
     fetchProfile();
+    fetchCategorizationRules();
   }, []);
 
   const fetchProfile = async () => {

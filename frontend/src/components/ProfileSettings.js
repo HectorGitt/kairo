@@ -699,7 +699,7 @@ function ProfileSettings({ user, token, onLogout }) {
                   onClick={() => {
                     setEditing(true);
                     setUseAI(false);
-                    setCurrentStep(1);
+                    setCurrentStep(2); // Jump directly to rules section
                   }}
                   variant="outline"
                   style={{ borderRadius: "10px", border: "2px solid #e2e8f0", padding: "0.625rem 1.25rem" }}

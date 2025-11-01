@@ -104,6 +104,23 @@ class FocusGoalCreate(BaseModel):
     goal_type: str
     target_value: int
 
+class Integration(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    integration_type: str  # notion, google_calendar, slack, google_fit, chrome_extension
+    status: str = "disconnected"  # connected, disconnected
+    credentials: dict = {}
+    settings: dict = {}
+    connected_at: Optional[datetime] = None
+    last_synced: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class IntegrationConnect(BaseModel):
+    integration_type: str
+    credentials: dict = {}
+    settings: dict = {}
+
 # ==================== AUTH HELPERS ====================
 
 def hash_password(password: str) -> str:

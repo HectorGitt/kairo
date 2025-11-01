@@ -5,23 +5,82 @@ let startTime = null;
 let apiUrl = '';
 let authToken = '';
 let tabSwitchCount = 0;
+let focusMode = false;
+let pomodoroActive = false;
+let pomodoroTimeLeft = 0;
 
-// Distraction sites - can be customized by user
-const distractionSites = [
-  'youtube.com', 'facebook.com', 'twitter.com', 'instagram.com',
-  'reddit.com', 'tiktok.com', 'netflix.com', 'twitch.tv'
-];
+// Dynamic categorization rules (fetched from backend)
+let productiveSites = [];
+let distractionSites = [];
+let customSites = [];
+let profileSet = false;
 
-const productiveSites = [
+// Default fallback rules
+const defaultProductiveSites = [
   'github.com', 'stackoverflow.com', 'docs.', 'developer.',
   'notion.so', 'figma.com', 'canva.com', 'trello.com'
 ];
 
+const defaultDistractionSites = [
+  'youtube.com', 'facebook.com', 'twitter.com', 'instagram.com',
+  'reddit.com', 'tiktok.com', 'netflix.com', 'twitch.tv'
+];
+
+// Initialize with defaults
+productiveSites = [...defaultProductiveSites];
+distractionSites = [...defaultDistractionSites];
+
 // Load settings from storage
-chrome.storage.local.get(['apiUrl', 'authToken'], (result) => {
+chrome.storage.local.get(['apiUrl', 'authToken', 'focusMode', 'customSites'], (result) => {
   if (result.apiUrl) apiUrl = result.apiUrl;
-  if (result.authToken) authToken = result.authToken;
+  if (result.authToken) {
+    authToken = result.authToken;
+    fetchCategorizationRules(); // Fetch personalized rules on startup
+  }
+  if (result.focusMode) focusMode = result.focusMode;
+  if (result.customSites) {
+    productiveSites = result.customSites.productive || productiveSites;
+    distractionSites = result.customSites.distraction || distractionSites;
+  }
 });
+
+// Fetch personalized categorization rules from backend
+async function fetchCategorizationRules() {
+  if (!apiUrl || !authToken) return;
+  
+  try {
+    const response = await fetch(`${apiUrl}/profile/categorization-rules`, {
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    });
+    
+    if (response.ok) {
+      const rules = await response.json();
+      productiveSites = rules.productive || defaultProductiveSites;
+      distractionSites = rules.distraction || defaultDistractionSites;
+      customSites = rules.custom_sites || [];
+      profileSet = rules.profile_set || false;
+      
+      // Store in local storage for offline access
+      chrome.storage.local.set({
+        customSites: {
+          productive: productiveSites,
+          distraction: distractionSites,
+          custom: customSites
+        },
+        profileSet: profileSet
+      });
+      
+      console.log('Personalized categorization rules loaded:', {
+        productive: productiveSites.length,
+        distraction: distractionSites.length,
+        custom: customSites.length,
+        profileSet: profileSet
+      });
+    }
+  } catch (error) {
+    console.error('Failed to fetch categorization rules:', error);
+  }
+}
 
 // Listen for storage changes
 chrome.storage.onChanged.addListener((changes) => {

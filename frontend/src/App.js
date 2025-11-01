@@ -99,6 +99,12 @@ function App() {
               user ? <Integrations user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
             } 
           />
+          <Route 
+            path="/integrations/:integrationId" 
+            element={
+              user ? <IntegrationDashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            } 
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />

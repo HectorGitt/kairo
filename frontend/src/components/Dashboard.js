@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Brain, LogOut, TrendingUp, Clock, Target, Sparkles, Chrome, ArrowRight, Zap, Award, Activity, BarChart3, Info } from "lucide-react";
+import { TrendingUp, Clock, Target, Sparkles, Chrome, ArrowRight, Zap, Award, Activity, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import SharedNav from "@/components/SharedNav";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;

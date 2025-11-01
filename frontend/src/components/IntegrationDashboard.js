@@ -70,6 +70,48 @@ const INTEGRATION_DETAILS = {
 function IntegrationDashboard({ user, token, onLogout }) {
   const navigate = useNavigate();
   const { integrationId } = useParams();
+  const [stats, setStats] = useState(null);
+  const [weeklyData, setWeeklyData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (integrationId === 'chrome_extension' || integrationId === 'edge_extension' || 
+        integrationId === 'firefox_extension' || integrationId === 'safari_extension') {
+      fetchRealStats();
+    }
+  }, [integrationId]);
+
+  const fetchRealStats = async () => {
+    try {
+      const [statsResponse, weeklyResponse] = await Promise.all([
+        axios.get(`${API}/browsing/stats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${API}/browsing/weekly-summary`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
+      setStats(statsResponse.data);
+      setWeeklyData(weeklyResponse.data);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
+  };
+
+  const formatHour = (hour) => {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour} ${period}`;
+  };
   const [integrationData, setIntegrationData] = useState(null);
   const [loading, setLoading] = useState(true);
 

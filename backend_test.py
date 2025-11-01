@@ -424,6 +424,10 @@ class KairoAPITester:
         # Basic tests
         self.test_health_check()
         
+        # HIGH PRIORITY: Extension download test (no auth required)
+        print("\n🔥 HIGH PRIORITY TESTS:")
+        self.test_extension_download()
+        
         # Auth tests
         if self.test_register():
             # Store email for login test
@@ -435,15 +439,27 @@ class KairoAPITester:
         
         # Protected endpoint tests (require authentication)
         if self.token:
+            print("\n📋 PROFILE MANAGEMENT TESTS:")
+            self.test_profile_get()
+            self.test_profile_update()
+            self.test_categorization_rules()
+            
+            print("\n📊 BROWSING & STATS TESTS:")
             self.test_browsing_session_creation()
             self.test_browsing_stats()
             self.test_browsing_sessions_list()
+            self.test_weekly_summary()
+            
+            print("\n🎯 GOALS & INSIGHTS TESTS:")
             self.test_focus_goals_creation()
             self.test_focus_goals_list()
             self.test_daily_insights_list()
             
+            print("\n🔗 INTEGRATIONS TESTS:")
+            self.test_integrations_list()
+            
             # AI insights test (may be slow)
-            print("\n⚠️  Testing AI insights generation (this may take 10-15 seconds)...")
+            print("\n🤖 AI TESTS (may take 10-15 seconds):")
             self.test_ai_insights_generation()
         
         # Print summary

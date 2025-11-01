@@ -101,3 +101,93 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Fix multiple UI/UX issues in Kairo application:
+  1. TrendingUp import missing in ProfileSettings (already fixed)
+  2. Edit rules button not working in ProfileSettings
+  3. Settings button not working on Chrome extension integration card
+  4. Change "View Dashboard" text to be more descriptive
+  5. Add ability to download updated extension from settings/dashboard area
+
+backend:
+  - task: "Extension download endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Endpoint already exists at /api/extension/download"
+
+frontend:
+  - task: "Fix Edit Rules button in ProfileSettings"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/ProfileSettings.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Button currently navigates to '/profile' but should enter edit mode. Need to fix onClick handler."
+
+  - task: "Fix Settings button in Integrations page"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/Integrations.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Settings button on line 370 has no onClick handler. Should navigate to extension setup or profile settings."
+
+  - task: "Update 'View Dashboard' text to be more descriptive"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/Integrations.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Text on line 287 should be changed to 'Dashboard & Settings' or similar to better describe functionality."
+
+  - task: "Add extension download functionality to Dashboard/Settings"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/Dashboard.js,/app/frontend/src/components/ProfileSettings.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Need to add a section or button that allows users to download updated extension from dashboard or profile settings."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Fix Edit Rules button in ProfileSettings"
+    - "Fix Settings button in Integrations page"
+    - "Update 'View Dashboard' text to be more descriptive"
+    - "Add extension download functionality to Dashboard/Settings"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Starting implementation of UI/UX fixes. Will fix button handlers, update text, and add extension download feature."

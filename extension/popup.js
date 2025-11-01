@@ -227,3 +227,23 @@ setupProfileBtn.addEventListener('click', async () => {
     alert('Please configure API settings first in the Settings tab');
   }
 });
+
+// Download extension button
+const downloadExtensionBtn = document.getElementById('downloadExtension');
+downloadExtensionBtn.addEventListener('click', async () => {
+  const { apiUrl } = await chrome.storage.local.get(['apiUrl']);
+  if (apiUrl) {
+    // Open download link in new tab
+    chrome.tabs.create({ url: `${apiUrl}/extension/download` });
+    
+    // Show success message
+    successMsg.textContent = '📥 Extension download started!';
+    successMsg.style.display = 'block';
+    setTimeout(() => {
+      successMsg.style.display = 'none';
+      successMsg.textContent = '✓ Settings saved successfully!';
+    }, 3000);
+  } else {
+    alert('Please configure API URL first in the Settings tab');
+  }
+});

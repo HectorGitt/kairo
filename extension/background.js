@@ -150,6 +150,9 @@ chrome.runtime.onInstalled.addListener(() => {
   // Set up keep-alive alarm
   chrome.alarms.create('keepAlive', { periodInMinutes: 1 });
   
+  // Set up auto-refresh rules alarm (every 30 minutes)
+  chrome.alarms.create('refreshRules', { periodInMinutes: 30 });
+  
   // Request notification permission
   if (Notification.permission !== 'granted') {
     Notification.requestPermission();

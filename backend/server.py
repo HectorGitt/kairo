@@ -67,6 +67,7 @@ class BrowsingSession(BaseModel):
     domain: str
     category: str  # productive, neutral, distraction
     time_spent: int  # in seconds
+    tab_switches: int = 0  # number of context switches during this session
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class BrowsingSessionCreate(BaseModel):
@@ -75,6 +76,7 @@ class BrowsingSessionCreate(BaseModel):
     domain: str
     category: str
     time_spent: int
+    tab_switches: int = 0
 
 class DailyInsight(BaseModel):
     model_config = ConfigDict(extra="ignore")

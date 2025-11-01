@@ -1,0 +1,63 @@
+<analysis>
+The previous AI engineer successfully initiated the Kairo application, building a full-stack (FastAPI, React, MongoDB) and Chrome extension solution. Key initial accomplishments included setting up the basic project structure, implementing core backend and frontend features, and creating the browser extension. Early iterations focused on fixing the extension's download functionality and resolving icon loading issues. A major pivot occurred when the user provided extensive dashboard metric requirements, leading to significant enhancements in backend data tracking, extension logic, and frontend UI for displaying insights and privacy details. Subsequent work established an Integrations page infrastructure and, crucially, implemented Personalized Distraction Time within the Chrome extension and web app profile, allowing dynamic, AI-powered rule generation based on user input. The engineer demonstrated strong iterative development, debugging syntax errors, and addressing UI/UX feedback like shared navigation, profile settings redesign with a step form, and conditional rendering issues. The current work involves displaying generated rules and attention health tips in the profile settings.
+</analysis>
+
+<product_requirements>
+The user aims to develop Kairo, an AI accountability partner consisting of a web app and a Chrome browser extension. The extension detects distractions and provides nudges, while the web app serves as a reflection space for daily insights and progress summaries to improve work habits.
+**Key Features Implemented**:
+-   **Architecture**: FastAPI backend, React frontend, MongoDB, Chrome extension.
+-   **AI Integration**: Claude Sonnet 4, using Emergent LLM key.
+-   **Authentication**: JWT username/password.
+-   **Chrome Extension**: Tracks browsing patterns (tab switches, URLs), applies categorization, syncs data with the backend, includes a Pomodoro timer, focus mode (site blocking), improved nudges, and a quick stats view. Users can download a packaged extension.
+-   **Personalization**: Implements Personalized Distraction Time via a user profile. Metrics (focus, distraction) are dynamically generated based on user-defined profession, work focus, and interests.
+-   **Web App Dashboard**: Displays comprehensive metrics: Active Focus Time, Distraction Time, Focus Ratio, Context Switches, Peak Focus Hours, Attention Health Score (AI-generated), and Streaks.
+-   **Integrations**: An extensible framework for future third-party integrations (e.g., Notion, Google Calendar, Slack) with dedicated pages and connect/disconnect capabilities (currently placeholder).
+-   **Profile Management**: A dedicated Profile Settings page allows users to set up and modify their personalization preferences using an interactive, step-based form, view generated categorization rules, and receive attention health tips.
+-   **UI/UX**: Shared navigation components, dynamic display of extension connection status, Kairo icon linking to homepage, and consistent design patterns.
+</product_requirements>
+
+<key_technical_concepts>
+-   **FastAPI**: Python web framework for backend API.
+-   **React**: JavaScript library for building user interfaces.
+-   **MongoDB**: NoSQL database for data persistence.
+-   **Chrome Extension APIs**: For browser interaction, tab tracking, content scripting.
+-   **Emergentintegrations**: Custom library for LLM (Claude Sonnet 4) interaction using Emergent LLM Key.
+-   **JWT**: JSON Web Tokens for user authentication.
+-   **Shadcn/UI & Tailwind CSS**: Frontend component library and utility-first CSS framework.
+</key_technical_concepts>
+
+<code_architecture>
+The application follows a typical full-stack architecture with a FastAPI backend, a React frontend, and a separate Chrome browser extension.
+
+**Directory Structure**:
+
+
+**Key Files and Their Importance/Changes**:
+
+-   : The core FastAPI application. It manages user authentication, stores and retrieves browsing data, handles user profiles, generates and serves personalized categorization rules, provides metric endpoints for the dashboard, and serves the Chrome extension as a zip file. It has been significantly expanded to include personalized rule generation and various data endpoints.
+-   : Lists Python dependencies, including  for LLM calls and  for handling asynchronous file operations (like serving the zip).
+-   : The main React component defining the application's routing. It orchestrates navigation to , , , , , and , including conditional redirects for initial profile setup.
+-   : Displays aggregated user focus metrics and insights. It dynamically shows/hides the extension connection banner based on data availability.
+-   : Guides users through the Chrome extension installation, provides privacy details on data collection, and offers a button to download the packaged extension.
+-   : A new component listing various integration categories and allowing users to connect or disconnect from third-party services.
+-   : Facilitates the initial setup of a user's professional details and interests, which is crucial for Kairo's personalized categorization.
+-   : A central component for managing user personalization. It provides an interactive, step-based form for editing profile details, viewing dynamically generated categorization rules, and displaying attention health tips. It has undergone multiple refactorings for improved UI and conditional rendering.
+-   : A newly created reusable navigation component ensuring consistent header and branding across multiple pages, including linking the Kairo icon to the homepage.
+-   : Defines the Chrome extension's metadata, permissions, and entry points.
+-   : Runs in the background, handling core extension logic such as tracking active tabs, monitoring idle state, implementing nudges, enforcing focus mode, managing the Pomodoro timer, and syncing data with the backend using personalized rules.
+-   : Injected into web pages to display real-time nudges and activate focus mode overlays.
+-    and : Define the user interface and logic for the extension's popup, showing quick stats, Pomodoro controls, and focus mode toggles.
+</code_architecture>
+
+<pending_tasks>
+-   Implement real third-party integrations (e.g., Google Calendar with OAuth) as currently placeholder values are used. This was explicitly deferred by the user.
+-   Add the  import to .
+</pending_tasks>
+
+<current_work>
+The AI engineer is currently working on the  component. The immediate goal is to finalize the display of dynamically generated categorization rules, allowing users to review and potentially edit them. Additionally, a new section has been integrated to provide users with explanations and actionable tips to maintain a high Attention Health Score. This aims to enhance user control over personalization and provide educational value. The most recent action involved adding content for generated rules and attention health tips to this file, and the very next step is to address a missing  import, which is used within the newly added tips section. This ensures the component functions correctly and displays all intended UI elements.
+</current_work>
+
+<optional_next_step>
+Add the missing  import to .
+</optional_next_step>

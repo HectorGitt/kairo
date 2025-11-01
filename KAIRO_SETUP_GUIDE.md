@@ -12,7 +12,7 @@ Kairo is your AI-powered accountability partner that helps you stay focused and 
 ## 🚀 Quick Start
 
 ### 1. Access the Web App
-Visit: `https://mindful-tabs.preview.emergentagent.com`
+Visit: `https://mindful-tabs-1.preview.emergentagent.com`
 
 ### 2. Create Your Account
 - Click "Need an account? Sign up"

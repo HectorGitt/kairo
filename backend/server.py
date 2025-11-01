@@ -662,9 +662,9 @@ async def generate_ai_profile(
             system_message="You are a focus productivity expert. Analyze user descriptions and generate personalized site categorization rules."
         ).with_model("anthropic", "claude-3-7-sonnet-20250219")
         
-        prompt = f\"\"\"Based on this description, generate a personalized focus profile:
+        prompt = f"""Based on this description, generate a personalized focus profile:
 
-\"{data.description}\"
+"{data.description}"
 
 Return a JSON object with:
 1. profession: Their job/role
@@ -677,7 +677,7 @@ Return a JSON object with:
 Be specific about which sites should be productive vs distraction for THIS person.
 Consider: content creators need social media, developers need GitHub/StackOverflow, etc.
 
-Return ONLY the JSON object, no explanation.\"\"\"
+Return ONLY the JSON object, no explanation."""
         
         user_message = UserMessage(text=prompt)
         response = await chat.send_message(user_message)

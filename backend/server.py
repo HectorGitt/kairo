@@ -589,6 +589,187 @@ async def get_goals(current_user: User = Depends(get_current_user)):
     
     return goals
 
+# ==================== USER PROFILE ROUTES ====================
+
+@api_router.get("/profile")
+async def get_profile(current_user: User = Depends(get_current_user)):
+    """Get user's personalization profile"""
+    profile = await db.user_profiles.find_one(
+        {"user_id": current_user.id},
+        {"_id": 0}
+    )
+    
+    if not profile:
+        return {
+            "user_id": current_user.id,
+            "profession": "",
+            "work_focus": [],
+            "important_sites": [],
+            "interests": [],
+            "learning_goals": [],
+            "custom_rules": [],
+            "ai_generated": False
+        }
+    
+    if isinstance(profile.get('created_at'), str):
+        profile['created_at'] = datetime.fromisoformat(profile['created_at'])
+    if isinstance(profile.get('updated_at'), str):
+        profile['updated_at'] = datetime.fromisoformat(profile['updated_at'])
+    
+    return profile
+
+@api_router.post("/profile")
+async def update_profile(
+    profile_data: UserProfileCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Update user's personalization profile"""
+    # Check if profile exists
+    existing = await db.user_profiles.find_one({"user_id": current_user.id})
+    
+    if existing:
+        # Update existing
+        await db.user_profiles.update_one(
+            {"user_id": current_user.id},
+            {"$set": {
+                **profile_data.model_dump(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+    else:
+        # Create new
+        profile = UserProfile(
+            user_id=current_user.id,
+            **profile_data.model_dump()
+        )
+        profile_doc = profile.model_dump()
+        profile_doc['created_at'] = profile_doc['created_at'].isoformat()
+        profile_doc['updated_at'] = profile_doc['updated_at'].isoformat()
+        await db.user_profiles.insert_one(profile_doc)
+    
+    return {"message": "Profile updated successfully"}
+
+@api_router.post("/profile/generate-ai")
+async def generate_ai_profile(
+    data: UserProfileAIRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate personalized profile using AI"""
+    try:
+        chat = LlmChat(
+            api_key=os.environ['EMERGENT_LLM_KEY'],
+            session_id=f"profile_gen_{current_user.id}",
+            system_message="You are a focus productivity expert. Analyze user descriptions and generate personalized site categorization rules."
+        ).with_model("anthropic", "claude-3-7-sonnet-20250219")
+        
+        prompt = f\"\"\"Based on this description, generate a personalized focus profile:
+
+\"{data.description}\"
+
+Return a JSON object with:
+1. profession: Their job/role
+2. work_focus: Array of work areas (e.g., ["social media", "content creation"])
+3. important_sites: Array of sites critical for their work with categorization
+   Format: [{{"domain": "twitter.com", "category": "productive", "reason": "Social media management"}}]
+4. interests: Array of personal interests
+5. learning_goals: Array of what they're learning
+
+Be specific about which sites should be productive vs distraction for THIS person.
+Consider: content creators need social media, developers need GitHub/StackOverflow, etc.
+
+Return ONLY the JSON object, no explanation.\"\"\"
+        
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        
+        # Parse AI response
+        import json
+        try:
+            # Extract JSON from response
+            json_start = response.find('{')
+            json_end = response.rfind('}') + 1
+            if json_start != -1 and json_end > json_start:
+                ai_data = json.loads(response[json_start:json_end])
+            else:
+                ai_data = json.loads(response)
+            
+            # Create profile
+            profile = UserProfile(
+                user_id=current_user.id,
+                profession=ai_data.get('profession', ''),
+                work_focus=ai_data.get('work_focus', []),
+                important_sites=ai_data.get('important_sites', []),
+                interests=ai_data.get('interests', []),
+                learning_goals=ai_data.get('learning_goals', []),
+                ai_generated=True
+            )
+            
+            profile_doc = profile.model_dump()
+            profile_doc['created_at'] = profile_doc['created_at'].isoformat()
+            profile_doc['updated_at'] = profile_doc['updated_at'].isoformat()
+            
+            # Replace existing profile
+            await db.user_profiles.replace_one(
+                {"user_id": current_user.id},
+                profile_doc,
+                upsert=True
+            )
+            
+            return {
+                "message": "AI profile generated successfully",
+                "profile": profile
+            }
+        
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse AI response: {response}")
+            raise HTTPException(status_code=500, detail="Failed to parse AI response")
+    
+    except Exception as e:
+        logger.error(f"Error generating AI profile: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to generate AI profile")
+
+@api_router.get("/profile/categorization-rules")
+async def get_categorization_rules(current_user: User = Depends(get_current_user)):
+    """Get dynamic categorization rules for the extension"""
+    profile = await db.user_profiles.find_one(
+        {"user_id": current_user.id},
+        {"_id": 0}
+    )
+    
+    if not profile:
+        # Return default generic rules
+        return {
+            "productive": ["github.com", "stackoverflow.com", "docs.", "developer.", "notion.so"],
+            "distraction": ["youtube.com", "facebook.com", "twitter.com", "instagram.com", "reddit.com", "tiktok.com"],
+            "custom_sites": [],
+            "profile_set": False
+        }
+    
+    # Build custom rules based on profile
+    productive_sites = ["github.com", "stackoverflow.com", "docs.", "developer."]
+    distraction_sites = ["youtube.com", "facebook.com", "instagram.com", "tiktok.com"]
+    
+    # Add user's important sites
+    custom_sites = []
+    for site in profile.get('important_sites', []):
+        domain = site['domain']
+        category = site['category']
+        
+        if category == 'productive' and domain not in productive_sites:
+            productive_sites.append(domain)
+            custom_sites.append(site)
+        elif category == 'distraction' and domain in distraction_sites:
+            distraction_sites.remove(domain)
+    
+    return {
+        "productive": productive_sites,
+        "distraction": distraction_sites,
+        "custom_sites": custom_sites,
+        "profile_set": True,
+        "profession": profile.get('profession', ''),
+        "work_focus": profile.get('work_focus', [])
+    }
+
 # ==================== INTEGRATIONS ROUTES ====================
 
 @api_router.get("/integrations", response_model=List[Integration])

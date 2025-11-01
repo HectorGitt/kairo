@@ -30,6 +30,44 @@ const defaultDistractionSites = [
 productiveSites = [...defaultProductiveSites];
 distractionSites = [...defaultDistractionSites];
 
+// Keep service worker alive with periodic alarm
+chrome.alarms.create('keepAlive', { periodInMinutes: 1 });
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'keepAlive') {
+    // Check for long distraction sessions
+    checkForLongDistraction();
+  }
+  
+  if (alarm.name === 'pomodoroTick') {
+    updatePomodoroTimer();
+  }
+});
+
+// Check if user has been on distraction site for too long
+async function checkForLongDistraction() {
+  if (!currentTab || !startTime) return;
+  
+  const timeSpent = Date.now() - startTime;
+  const category = categorizeUrl(currentTab.url);
+  
+  // Notify every 5 minutes on distraction sites
+  if (category === 'distraction' && timeSpent > 300000 && timeSpent % 300000 < 60000) {
+    try {
+      await chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icons/icon48.png',
+        title: 'Kairo Nudge',
+        message: `You've been on ${new URL(currentTab.url).hostname} for ${Math.floor(timeSpent / 60000)} minutes. Ready to refocus?`,
+        priority: 2,
+        requireInteraction: false
+      });
+    } catch (error) {
+      console.error('Notification error:', error);
+    }
+  }
+}
+
 // Load settings from storage
 chrome.storage.local.get(['apiUrl', 'authToken', 'focusMode', 'customSites'], (result) => {
   if (result.apiUrl) apiUrl = result.apiUrl;

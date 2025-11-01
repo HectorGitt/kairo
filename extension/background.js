@@ -355,21 +355,5 @@ function stopPomodoro() {
   });
 }
 
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'pomodoroTick' && pomodoroActive) {
-    pomodoroTimeLeft--;
-    
-    if (pomodoroTimeLeft <= 0) {
-      stopPomodoro();
-    }
-  } else if (alarm.name === 'saveSession' && currentTab && startTime) {
-    const timeSpent = Date.now() - startTime;
-    if (timeSpent > 5000) {
-      sendSession(currentTab, timeSpent);
-      startTime = Date.now(); // Reset timer
-    }
-  }
-});
-
 // Periodic save (every 2 minutes)
 chrome.alarms.create('saveSession', { periodInMinutes: 2 });

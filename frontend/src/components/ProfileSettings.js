@@ -222,7 +222,333 @@ function ProfileSettings({ user, token, onLogout }) {
         </div>
 
         {/* Edit Form */}
-        {editing ? (
+        {editing && (
+          <div className="glassmorphism" style={{ padding: "2.5rem", borderRadius: "20px", marginBottom: "2rem" }}>
+            {useAI ? (
+              /* AI Form */
+              <div>
+                <div style={{ marginBottom: "2rem", textAlign: "center" }}>
+                  <Sparkles size={48} style={{ color: "#8b5cf6", margin: "0 auto 1rem" }} />
+                  <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.5rem" }}>
+                    Regenerate with AI
+                  </h3>
+                  <p style={{ color: "#64748b" }}>
+                    Describe your work and Claude Sonnet 4 will build your profile
+                  </p>
+                </div>
+                
+                <Textarea
+                  value={aiDescription}
+                  onChange={(e) => setAiDescription(e.target.value)}
+                  placeholder="Example: I'm a social media manager for a tech startup. I spend most of my day on Twitter, LinkedIn, and Instagram creating content and analyzing metrics..."
+                  rows={10}
+                  style={{
+                    marginBottom: "1.5rem",
+                    padding: "1rem",
+                    borderRadius: "12px",
+                    border: "2px solid #e2e8f0",
+                    fontSize: "0.9375rem",
+                    lineHeight: "1.6"
+                  }}
+                />
+
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <Button
+                    onClick={handleSave}
+                    disabled={saving}
+                    style={{
+                      flex: 1,
+                      padding: "1rem",
+                      background: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                      borderRadius: "12px",
+                      fontSize: "1rem",
+                      fontWeight: "600"
+                    }}
+                  >
+                    {saving ? (
+                      <>
+                        <Sparkles size={18} style={{ marginRight: "0.5rem", animation: "spin 1s linear infinite" }} />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={18} style={{ marginRight: "0.5rem" }} />
+                        Generate & Save
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setEditing(false);
+                      setAiDescription("");
+                    }}
+                    variant="outline"
+                    style={{
+                      flex: 1,
+                      padding: "1rem",
+                      borderRadius: "12px",
+                      fontSize: "1rem",
+                      fontWeight: "600",
+                      border: "2px solid #e2e8f0"
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              /* Manual Step Form */
+              <div>
+                {/* Step Indicator */}
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
+                  {[1, 2, 3].map((step) => (
+                    <div key={step} style={{ display: "flex", alignItems: "center" }}>
+                      <div style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        background: currentStep >= step ? "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)" : "#e5e7eb",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: "600"
+                      }}>
+                        {step}
+                      </div>
+                      {step < 3 && (
+                        <div style={{
+                          width: "60px",
+                          height: "3px",
+                          background: currentStep > step ? "#0ea5e9" : "#e5e7eb"
+                        }}></div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Step 1: Profession */}
+                {currentStep === 1 && (
+                  <div>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
+                      Step 1: Your Role
+                    </h3>
+                    <div style={{ marginBottom: "2rem" }}>
+                      <Label htmlFor="profession" style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
+                        What do you do?
+                      </Label>
+                      <Input
+                        id="profession"
+                        value={profession}
+                        onChange={(e) => setProfession(e.target.value)}
+                        placeholder="e.g., Software Developer, Content Creator, Student"
+                        style={{ padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0", fontSize: "1rem" }}
+                      />
+                    </div>
+                    <Button
+                      onClick={() => setCurrentStep(2)}
+                      disabled={!profession.trim()}
+                      style={{
+                        width: "100%",
+                        padding: "0.875rem",
+                        background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                        borderRadius: "10px",
+                        fontSize: "1rem",
+                        fontWeight: "600"
+                      }}
+                    >
+                      Next Step
+                      <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
+                    </Button>
+                  </div>
+                )}
+
+                {/* Step 2: Work Focus & Sites */}
+                {currentStep === 2 && (
+                  <div>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
+                      Step 2: Work Details
+                    </h3>
+                    
+                    <div style={{ marginBottom: "1.5rem" }}>
+                      <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
+                        Work Focus Areas
+                      </Label>
+                      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                        <Input
+                          value={newWorkFocus}
+                          onChange={(e) => setNewWorkFocus(e.target.value)}
+                          placeholder="e.g., Social Media, Coding"
+                          onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddWorkFocus())}
+                          style={{ flex: 1, padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                        />
+                        <Button onClick={handleAddWorkFocus} style={{ padding: "0.75rem", borderRadius: "10px" }}>
+                          <Plus size={18} />
+                        </Button>
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                        {workFocus.map((focus, index) => (
+                          <span key={index} style={{
+                            background: "#e0f2fe",
+                            color: "#0284c7",
+                            padding: "0.5rem 0.75rem",
+                            borderRadius: "20px",
+                            fontSize: "0.875rem",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem"
+                          }}>
+                            {focus}
+                            <X size={14} style={{ cursor: "pointer" }} onClick={() => handleRemoveWorkFocus(index)} />
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: "2rem" }}>
+                      <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
+                        Custom Site Rules
+                      </Label>
+                      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 2fr auto", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                        <Input
+                          value={newSite.domain}
+                          onChange={(e) => setNewSite({ ...newSite, domain: e.target.value })}
+                          placeholder="twitter.com"
+                          style={{ padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                        />
+                        <select
+                          value={newSite.category}
+                          onChange={(e) => setNewSite({ ...newSite, category: e.target.value })}
+                          style={{ padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                        >
+                          <option value="productive">Productive</option>
+                          <option value="neutral">Neutral</option>
+                        </select>
+                        <Input
+                          value={newSite.reason}
+                          onChange={(e) => setNewSite({ ...newSite, reason: e.target.value })}
+                          placeholder="Reason"
+                          style={{ padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                        />
+                        <Button onClick={handleAddSite} style={{ padding: "0.75rem", borderRadius: "10px" }}>
+                          <Plus size={18} />
+                        </Button>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                        {importantSites.map((site, index) => (
+                          <div key={index} style={{
+                            background: "#f8fafc",
+                            padding: "0.75rem",
+                            borderRadius: "10px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center"
+                          }}>
+                            <span style={{ fontSize: "0.875rem" }}><strong>{site.domain}</strong> ({site.category})</span>
+                            <X size={14} style={{ cursor: "pointer" }} onClick={() => handleRemoveSite(index)} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <Button
+                        onClick={() => setCurrentStep(1)}
+                        variant="outline"
+                        style={{ flex: 1, padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                      >
+                        <ChevronLeft size={18} style={{ marginRight: "0.5rem" }} />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={() => setCurrentStep(3)}
+                        style={{
+                          flex: 1,
+                          padding: "0.875rem",
+                          background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                          borderRadius: "10px"
+                        }}
+                      >
+                        Next Step
+                        <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Interests & Save */}
+                {currentStep === 3 && (
+                  <div>
+                    <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
+                      Step 3: Personal Interests
+                    </h3>
+                    
+                    <div style={{ marginBottom: "2rem" }}>
+                      <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
+                        What are you interested in?
+                      </Label>
+                      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                        <Input
+                          value={newInterest}
+                          onChange={(e) => setNewInterest(e.target.value)}
+                          placeholder="e.g., Photography, Gaming"
+                          onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddInterest())}
+                          style={{ flex: 1, padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                        />
+                        <Button onClick={handleAddInterest} style={{ padding: "0.75rem", borderRadius: "10px" }}>
+                          <Plus size={18} />
+                        </Button>
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                        {interests.map((interest, index) => (
+                          <span key={index} style={{
+                            background: "#f0fdf4",
+                            color: "#16a34a",
+                            padding: "0.5rem 0.75rem",
+                            borderRadius: "20px",
+                            fontSize: "0.875rem",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem"
+                          }}>
+                            {interest}
+                            <X size={14} style={{ cursor: "pointer" }} onClick={() => handleRemoveInterest(index)} />
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <Button
+                        onClick={() => setCurrentStep(2)}
+                        variant="outline"
+                        style={{ flex: 1, padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
+                      >
+                        <ChevronLeft size={18} style={{ marginRight: "0.5rem" }} />
+                        Back
+                      </Button>
+                      <Button
+                        onClick={handleSave}
+                        disabled={saving}
+                        style={{
+                          flex: 2,
+                          padding: "0.875rem",
+                          background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+                          borderRadius: "10px",
+                          fontSize: "1rem",
+                          fontWeight: "600"
+                        }}
+                      >
+                        <Save size={18} style={{ marginRight: "0.5rem" }} />
+                        {saving ? "Saving..." : "Save Profile"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
           <div className="glassmorphism" style={{ padding: "2.5rem", borderRadius: "20px", marginBottom: "2rem" }}>
             {/* Profession */}
             <div style={{ marginBottom: "1.5rem" }}>

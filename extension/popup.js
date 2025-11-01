@@ -204,18 +204,6 @@ chrome.runtime.sendMessage({ action: 'getPomodoroStatus' }, (response) => {
   }
 });
 
-// Refresh personalization rules
-refreshRulesBtn.addEventListener('click', () => {
-  chrome.runtime.sendMessage({ action: 'refreshRules' }, () => {
-    successMsg.textContent = '✓ Personalization rules refreshed!';
-    successMsg.style.display = 'block';
-    setTimeout(() => {
-      successMsg.style.display = 'none';
-      successMsg.textContent = '✓ Settings saved successfully!';
-    }, 3000);
-  });
-});
-
 // Setup profile button
 setupProfileBtn.addEventListener('click', async () => {
   const { apiUrl } = await chrome.storage.local.get(['apiUrl']);

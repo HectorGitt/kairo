@@ -94,6 +94,9 @@ async function sendSession(tab, timeSpent) {
 
 // Track active tab
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  // Increment tab switch counter
+  tabSwitchCount++;
+  
   // Save previous tab data
   if (currentTab && startTime) {
     const timeSpent = Date.now() - startTime;

@@ -314,6 +314,100 @@ async def get_browsing_stats(
         "switches_per_hour": round(total_switches / (total_time / 3600), 1) if total_time > 0 else 0
     }
 
+@api_router.get("/browsing/weekly-summary")
+async def get_weekly_summary(current_user: User = Depends(get_current_user)):
+    """Get comprehensive weekly metrics including streaks and attention health"""
+    
+    # Get last 7 days of insights
+    today = datetime.now(timezone.utc)
+    seven_days_ago = today - timedelta(days=7)
+    
+    insights = await db.daily_insights.find(
+        {"user_id": current_user.id},
+        {"_id": 0}
+    ).sort("date", -1).limit(7).to_list(7)
+    
+    if not insights:
+        return {
+            "focus_streak": 0,
+            "weekly_improvement": 0,
+            "attention_health": 0,
+            "total_focus_time": 0,
+            "badges": [],
+            "weekly_trend": []
+        }
+    
+    # Calculate focus streak (consecutive days with focus_score > 60)
+    focus_streak = 0
+    for insight in sorted(insights, key=lambda x: x['date'], reverse=True):
+        if insight['focus_score'] >= 60:
+            focus_streak += 1
+        else:
+            break
+    
+    # Calculate weekly improvement
+    if len(insights) >= 7:
+        recent_avg = sum(i['focus_score'] for i in insights[:4]) / 4
+        older_avg = sum(i['focus_score'] for i in insights[4:]) / len(insights[4:])
+        weekly_improvement = int(((recent_avg - older_avg) / older_avg) * 100) if older_avg > 0 else 0
+    else:
+        weekly_improvement = 0
+    
+    # Calculate attention health score (0-100)
+    # Weighted combination of: consistency (30%), focus_score (40%), streak (20%), improvement (10%)
+    avg_focus = sum(i['focus_score'] for i in insights) / len(insights) if insights else 0
+    consistency = (len(insights) / 7) * 100  # percentage of days tracked
+    streak_score = min(focus_streak * 10, 100)  # cap at 100
+    improvement_score = max(0, min(weekly_improvement + 50, 100))  # normalize to 0-100
+    
+    attention_health = int(
+        (avg_focus * 0.4) +
+        (consistency * 0.3) +
+        (streak_score * 0.2) +
+        (improvement_score * 0.1)
+    )
+    
+    # Calculate total weekly focus time
+    total_focus_time = sum(i['productive_time'] for i in insights)
+    
+    # Determine badges
+    badges = []
+    if focus_streak >= 3:
+        badges.append({"name": "3-Day Streak", "icon": "🔥", "color": "#f59e0b"})
+    if focus_streak >= 5:
+        badges.append({"name": "5-Day Streak", "icon": "⭐", "color": "#10b981"})
+    if focus_streak >= 7:
+        badges.append({"name": "Weekly Champion", "icon": "🏆", "color": "#8b5cf6"})
+    if total_focus_time >= 10800:  # 3 hours
+        badges.append({"name": "3-Hour Flow", "icon": "🌊", "color": "#06b6d4"})
+    if avg_focus >= 80:
+        badges.append({"name": "Focus Ninja", "icon": "🥷", "color": "#ef4444"})
+    if attention_health >= 90:
+        badges.append({"name": "Elite Focus", "icon": "💎", "color": "#a855f7"})
+    
+    # Weekly trend data
+    weekly_trend = []
+    for insight in sorted(insights, key=lambda x: x['date']):
+        date_obj = datetime.fromisoformat(insight['date']) if isinstance(insight['date'], str) else insight['date']
+        weekly_trend.append({
+            "date": insight['date'],
+            "day": date_obj.strftime("%a"),
+            "focus_score": insight['focus_score'],
+            "productive_time": insight['productive_time'],
+            "distraction_time": insight['distraction_time']
+        })
+    
+    return {
+        "focus_streak": focus_streak,
+        "weekly_improvement": weekly_improvement,
+        "attention_health": attention_health,
+        "total_focus_time": total_focus_time,
+        "badges": badges,
+        "weekly_trend": weekly_trend,
+        "avg_focus_score": int(avg_focus),
+        "consistency_rate": int(consistency)
+    }
+
 # ==================== AI INSIGHTS ROUTES ====================
 
 @api_router.post("/insights/generate")

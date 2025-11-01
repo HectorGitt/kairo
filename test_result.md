@@ -131,7 +131,7 @@ frontend:
     implemented: true
     working: "unknown"
     file: "/app/frontend/src/components/ProfileSettings.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: true
     status_history:
@@ -141,12 +141,18 @@ frontend:
       - working: "unknown"
         agent: "main"
         comment: "Fixed onClick handler to trigger editing mode (setEditing(true), setUseAI(false), setCurrentStep(1)). Frontend restarted successfully."
+      - working: false
+        agent: "user"
+        comment: "User reported: Edit rules button not working after manual testing"
+      - working: "unknown"
+        agent: "main"
+        comment: "Re-verified fix. Button should trigger edit mode. Need user to re-test with specific steps."
 
   - task: "Fix Settings button in Integrations page"
     implemented: true
     working: "unknown"
-    file: "/app/frontend/src/components/Integrations.js"
-    stuck_count: 0
+    file: "/app/frontend/src/components/Integrations.js,/app/frontend/src/components/IntegrationDashboard.js"
+    stuck_count: 1
     priority: "high"
     needs_retesting: true
     status_history:
@@ -156,12 +162,18 @@ frontend:
       - working: "unknown"
         agent: "main"
         comment: "Added onClick handler that navigates to /extension-setup for chrome_extension, shows toast for others. Frontend restarted."
+      - working: false
+        agent: "user"
+        comment: "User reported: Settings/view dashboard not showing chrome extension download"
+      - working: "unknown"
+        agent: "main"
+        comment: "Added Chrome Extension Management section to IntegrationDashboard with download button and setup instructions link. 'Dashboard & Settings' button now properly shows download functionality."
 
   - task: "Update 'View Dashboard' text to be more descriptive"
     implemented: true
     working: "unknown"
     file: "/app/frontend/src/components/Integrations.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "medium"
     needs_retesting: true
     status_history:
@@ -171,11 +183,17 @@ frontend:
       - working: "unknown"
         agent: "main"
         comment: "Changed text from 'View Dashboard' to 'Dashboard & Settings' to better describe functionality."
+      - working: false
+        agent: "user"
+        comment: "User reported: Not yet visible"
+      - working: "unknown"
+        agent: "main"
+        comment: "Text change is in place. Button navigates to /integrations/chrome_extension which now has download functionality."
 
   - task: "Add extension download functionality to Dashboard/Settings"
     implemented: true
     working: "unknown"
-    file: "/app/frontend/src/components/ProfileSettings.js"
+    file: "/app/frontend/src/components/ProfileSettings.js,/app/frontend/src/components/IntegrationDashboard.js"
     stuck_count: 0
     priority: "medium"
     needs_retesting: true
@@ -186,6 +204,21 @@ frontend:
       - working: "unknown"
         agent: "main"
         comment: "Added 'Chrome Extension' section to ProfileSettings with download button and setup guide link. Includes Chrome and Download icon imports."
+      - working: "unknown"
+        agent: "main"
+        comment: "Also added Extension Management section to IntegrationDashboard page for chrome_extension with download and setup buttons."
+
+  - task: "Add extension download to Chrome extension popup"
+    implemented: true
+    working: "unknown"
+    file: "/app/extension/popup.html,/app/extension/popup.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "User requested download functionality inside chrome extension settings. Added 'Download Latest Extension' button to Settings tab in popup.html and implemented handler in popup.js that opens download URL in new tab."
 
 metadata:
   created_by: "main_agent"

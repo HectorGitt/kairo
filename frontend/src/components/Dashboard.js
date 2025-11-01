@@ -119,46 +119,48 @@ function Dashboard({ user, token, onLogout }) {
 
       {/* Main Content */}
       <main style={{ padding: "2rem", maxWidth: "1600px", margin: "0 auto" }}>
-        {/* Extension Setup Banner */}
-        <div className="glassmorphism card-hover" style={{
-          padding: "1.5rem 2rem",
-          borderRadius: "20px",
-          marginBottom: "2rem",
-          background: "linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(56, 189, 248, 0.05) 100%)",
-          border: "2px solid rgba(14, 165, 233, 0.2)"
-        }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-              <div style={{
-                background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-                borderRadius: "16px",
-                padding: "1rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}>
-                <Chrome size={28} style={{ color: "white" }} />
+        {/* Extension Setup Banner - Only show if no data */}
+        {(!loadingStats && (!stats || stats.session_count === 0)) && (
+          <div className="glassmorphism card-hover" style={{
+            padding: "1.5rem 2rem",
+            borderRadius: "20px",
+            marginBottom: "2rem",
+            background: "linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(56, 189, 248, 0.05) 100%)",
+            border: "2px solid rgba(14, 165, 233, 0.2)"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+                <div style={{
+                  background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                  borderRadius: "16px",
+                  padding: "1rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  <Chrome size={28} style={{ color: "white" }} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.25rem" }}>Install Kairo Extension</h3>
+                  <p style={{ color: "#64748b", fontSize: "0.95rem" }}>Get real-time focus nudges and track your browsing automatically</p>
+                </div>
               </div>
-              <div>
-                <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.25rem" }}>Install Kairo Extension</h3>
-                <p style={{ color: "#64748b", fontSize: "0.95rem" }}>Get real-time focus nudges and track your browsing automatically</p>
-              </div>
+              <Button
+                data-testid="setup-extension-button"
+                onClick={() => navigate("/extension-setup")}
+                style={{
+                  background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                  borderRadius: "12px",
+                  padding: "0.625rem 1.25rem",
+                  fontWeight: "600"
+                }}
+              >
+                Setup Extension
+                <ArrowRight size={18} style={{ marginLeft: "0.5rem" }} />
+              </Button>
             </div>
-            <Button
-              data-testid="setup-extension-button"
-              onClick={() => navigate("/extension-setup")}
-              style={{
-                background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-                borderRadius: "12px",
-                padding: "0.625rem 1.25rem",
-                fontWeight: "600"
-              }}
-            >
-              Setup Extension
-              <ArrowRight size={18} style={{ marginLeft: "0.5rem" }} />
-            </Button>
           </div>
-        </div>
+        )}
 
         {loadingStats ? (
           <div style={{ textAlign: "center", padding: "3rem" }}>

@@ -265,6 +265,40 @@ async def get_browsing_stats(
     top_distractions = sorted(distraction_domains.items(), key=lambda x: x[1], reverse=True)[:5]
     top_distractions = [{'domain': d[0], 'time': d[1]} for d in top_distractions]
     
+    # Get top productive sites
+    productive_domains = {}
+    for session in sessions:
+        if session['category'] == 'productive':
+            domain = session['domain']
+            productive_domains[domain] = productive_domains.get(domain, 0) + session['time_spent']
+    
+    top_productive = sorted(productive_domains.items(), key=lambda x: x[1], reverse=True)[:5]
+    top_productive = [{'domain': d[0], 'time': d[1]} for d in top_productive]
+    
+    # Calculate context switches
+    total_switches = sum(s.get('tab_switches', 0) for s in sessions)
+    
+    # Calculate average focus streak (average session time for productive sessions)
+    productive_sessions = [s for s in sessions if s['category'] == 'productive']
+    avg_focus_streak = 0
+    if productive_sessions:
+        avg_focus_streak = sum(s['time_spent'] for s in productive_sessions) / len(productive_sessions)
+    
+    # Peak focus hours (hour with most productive time)
+    hourly_productive = {}
+    for session in sessions:
+        if session['category'] == 'productive':
+            timestamp = session['timestamp']
+            if isinstance(timestamp, str):
+                timestamp = datetime.fromisoformat(timestamp)
+            hour = timestamp.hour
+            hourly_productive[hour] = hourly_productive.get(hour, 0) + session['time_spent']
+    
+    peak_hours = []
+    if hourly_productive:
+        sorted_hours = sorted(hourly_productive.items(), key=lambda x: x[1], reverse=True)
+        peak_hours = [h[0] for h in sorted_hours[:3]]
+    
     return {
         "total_time": total_time,
         "productive_time": productive_time,
@@ -272,7 +306,12 @@ async def get_browsing_stats(
         "neutral_time": neutral_time,
         "focus_score": focus_score,
         "top_distractions": top_distractions,
-        "session_count": len(sessions)
+        "top_productive": top_productive,
+        "session_count": len(sessions),
+        "context_switches": total_switches,
+        "avg_focus_streak": int(avg_focus_streak),
+        "peak_focus_hours": peak_hours,
+        "switches_per_hour": round(total_switches / (total_time / 3600), 1) if total_time > 0 else 0
     }
 
 # ==================== AI INSIGHTS ROUTES ====================

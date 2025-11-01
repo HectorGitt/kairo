@@ -59,56 +59,46 @@ function ProfileSettings({ user, token, onLogout }) {
   };
 
   const handleSave = async () => {
+    if (useAI && !aiDescription.trim()) {
+      toast.error("Please describe your work and interests");
+      return;
+    }
+
     setSaving(true);
     try {
-      await axios.post(
-        `${API}/profile`,
-        {
-          profession,
-          work_focus: workFocus,
-          important_sites: importantSites,
-          interests,
-          learning_goals: []
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      if (useAI) {
+        // AI generation
+        await axios.post(
+          `${API}/profile/generate-ai`,
+          { description: aiDescription },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success("Profile generated with AI!");
+      } else {
+        // Manual save
+        await axios.post(
+          `${API}/profile`,
+          {
+            profession,
+            work_focus: workFocus,
+            important_sites: importantSites,
+            interests,
+            learning_goals: []
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success("Profile updated successfully!");
+      }
       
-      toast.success("Profile updated successfully!");
       setEditing(false);
+      setUseAI(false);
+      setCurrentStep(1);
       fetchProfile();
-      
-      // Notify extension to refresh rules
       toast.success("Extension rules will refresh automatically");
     } catch (error) {
       toast.error("Failed to update profile");
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleAIRegenerate = async () => {
-    if (!aiDescription.trim()) {
-      toast.error("Please describe your work and interests");
-      return;
-    }
-
-    setRegenerating(true);
-    try {
-      await axios.post(
-        `${API}/profile/generate-ai`,
-        { description: aiDescription },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      toast.success("Profile regenerated with AI!");
-      setShowAIForm(false);
-      setAiDescription("");
-      fetchProfile();
-      setEditing(false);
-    } catch (error) {
-      toast.error("Failed to regenerate profile");
-    } finally {
-      setRegenerating(false);
     }
   };
 

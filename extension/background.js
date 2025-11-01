@@ -33,14 +33,23 @@ distractionSites = [...defaultDistractionSites];
 // Keep service worker alive with periodic alarm
 chrome.alarms.create('keepAlive', { periodInMinutes: 1 });
 
+// Single alarm listener for all alarm types
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'keepAlive') {
     // Check for long distraction sessions
     checkForLongDistraction();
-  }
-  
-  if (alarm.name === 'pomodoroTick') {
-    updatePomodoroTimer();
+  } else if (alarm.name === 'pomodoroTick' && pomodoroActive) {
+    pomodoroTimeLeft--;
+    
+    if (pomodoroTimeLeft <= 0) {
+      stopPomodoro();
+    }
+  } else if (alarm.name === 'saveSession' && currentTab && startTime) {
+    const timeSpent = Date.now() - startTime;
+    if (timeSpent > 5000) {
+      sendSession(currentTab, timeSpent);
+      startTime = Date.now(); // Reset timer
+    }
   }
 });
 

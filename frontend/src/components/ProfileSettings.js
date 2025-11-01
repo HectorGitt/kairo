@@ -61,6 +61,17 @@ function ProfileSettings({ user, token, onLogout }) {
     }
   };
 
+  const fetchCategorizationRules = async () => {
+    try {
+      const response = await axios.get(`${API}/profile/categorization-rules`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCategorizationRules(response.data);
+    } catch (error) {
+      console.error("Error fetching rules:", error);
+    }
+  };
+
   const handleSave = async () => {
     if (useAI && !aiDescription.trim()) {
       toast.error("Please describe your work and interests");

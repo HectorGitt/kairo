@@ -4,6 +4,7 @@ let currentTab = null;
 let startTime = null;
 let apiUrl = '';
 let authToken = '';
+let tabSwitchCount = 0;
 
 // Distraction sites - can be customized by user
 const distractionSites = [

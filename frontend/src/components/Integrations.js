@@ -182,6 +182,9 @@ function Integrations({ user, token, onLogout }) {
   };
 
   const isConnected = (integrationId) => {
+    if (integrationId === "chrome_extension") {
+      return chromeConnected;
+    }
     return integrations.some(
       (i) => i.integration_type === integrationId && i.status === "connected"
     );

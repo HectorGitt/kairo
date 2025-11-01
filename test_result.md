@@ -125,8 +125,8 @@ backend:
 
 frontend:
   - task: "Fix Edit Rules button in ProfileSettings"
-    implemented: false
-    working: false
+    implemented: true
+    working: "unknown"
     file: "/app/frontend/src/components/ProfileSettings.js"
     stuck_count: 0
     priority: "high"
@@ -135,10 +135,13 @@ frontend:
       - working: false
         agent: "main"
         comment: "Button currently navigates to '/profile' but should enter edit mode. Need to fix onClick handler."
+      - working: "unknown"
+        agent: "main"
+        comment: "Fixed onClick handler to trigger editing mode (setEditing(true), setUseAI(false), setCurrentStep(1)). Frontend restarted successfully."
 
   - task: "Fix Settings button in Integrations page"
-    implemented: false
-    working: false
+    implemented: true
+    working: "unknown"
     file: "/app/frontend/src/components/Integrations.js"
     stuck_count: 0
     priority: "high"
@@ -147,10 +150,13 @@ frontend:
       - working: false
         agent: "main"
         comment: "Settings button on line 370 has no onClick handler. Should navigate to extension setup or profile settings."
+      - working: "unknown"
+        agent: "main"
+        comment: "Added onClick handler that navigates to /extension-setup for chrome_extension, shows toast for others. Frontend restarted."
 
   - task: "Update 'View Dashboard' text to be more descriptive"
-    implemented: false
-    working: false
+    implemented: true
+    working: "unknown"
     file: "/app/frontend/src/components/Integrations.js"
     stuck_count: 0
     priority: "medium"
@@ -159,11 +165,14 @@ frontend:
       - working: false
         agent: "main"
         comment: "Text on line 287 should be changed to 'Dashboard & Settings' or similar to better describe functionality."
+      - working: "unknown"
+        agent: "main"
+        comment: "Changed text from 'View Dashboard' to 'Dashboard & Settings' to better describe functionality."
 
   - task: "Add extension download functionality to Dashboard/Settings"
-    implemented: false
-    working: false
-    file: "/app/frontend/src/components/Dashboard.js,/app/frontend/src/components/ProfileSettings.js"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/components/ProfileSettings.js"
     stuck_count: 0
     priority: "medium"
     needs_retesting: true
@@ -171,6 +180,9 @@ frontend:
       - working: false
         agent: "main"
         comment: "Need to add a section or button that allows users to download updated extension from dashboard or profile settings."
+      - working: "unknown"
+        agent: "main"
+        comment: "Added 'Chrome Extension' section to ProfileSettings with download button and setup guide link. Includes Chrome and Download icon imports."
 
 metadata:
   created_by: "main_agent"

@@ -220,6 +220,18 @@ frontend:
         agent: "main"
         comment: "User requested download functionality inside chrome extension settings. Added 'Download Latest Extension' button to Settings tab in popup.html and implemented handler in popup.js that opens download URL in new tab."
 
+  - task: "Add scroll-to-top on page navigation"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/components/ScrollToTop.js,/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "User requested scroll-to-top after navigating pages. Created ScrollToTop component that uses useLocation hook to detect route changes and scrolls to top instantly. Integrated into App.js inside BrowserRouter."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"

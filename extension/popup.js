@@ -12,7 +12,6 @@ const startPomodoroBtn = document.getElementById('startPomodoro');
 const stopPomodoroBtn = document.getElementById('stopPomodoro');
 const pomodoroTimer = document.getElementById('pomodoroTimer');
 const refreshStats = document.getElementById('refreshStats');
-const refreshRulesBtn = document.getElementById('refreshRules');
 const setupProfileBtn = document.getElementById('setupProfile');
 
 let pomodoroInterval = null;

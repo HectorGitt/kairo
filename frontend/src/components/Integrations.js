@@ -332,7 +332,23 @@ function Integrations({ user, token, onLogout }) {
                         <IntegrationIcon integration={integration} />
                       </div>
                       <div>
-                        <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a" }}>{integration.name}</h3>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a" }}>{integration.name}</h3>
+                          {integration.status === "preview" && (
+                            <span style={{
+                              background: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                              color: "white",
+                              padding: "0.125rem 0.5rem",
+                              borderRadius: "6px",
+                              fontSize: "0.6875rem",
+                              fontWeight: "600",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.05em"
+                            }}>
+                              Preview
+                            </span>
+                          )}
+                        </div>
                         {connected && (
                           <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", marginTop: "0.25rem" }}>
                             <CheckCircle size={14} style={{ color: "#22c55e" }} />

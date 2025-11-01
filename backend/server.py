@@ -121,6 +121,30 @@ class IntegrationConnect(BaseModel):
     credentials: dict = {}
     settings: dict = {}
 
+class UserProfile(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    profession: str = ""
+    work_focus: List[str] = []
+    important_sites: List[dict] = []  # [{"domain": "twitter.com", "category": "productive", "reason": "Social media management"}]
+    interests: List[str] = []
+    learning_goals: List[str] = []
+    custom_rules: List[dict] = []  # [{"pattern": "youtube.com", "category": "productive", "condition": "work hours"}]
+    ai_generated: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class UserProfileCreate(BaseModel):
+    profession: str = ""
+    work_focus: List[str] = []
+    important_sites: List[dict] = []
+    interests: List[str] = []
+    learning_goals: List[str] = []
+
+class UserProfileAIRequest(BaseModel):
+    description: str  # User's free-form description of their work/life
+
 # ==================== AUTH HELPERS ====================
 
 def hash_password(password: str) -> str:

@@ -92,11 +92,18 @@ chrome.storage.onChanged.addListener((changes) => {
   if (changes.focusMode) focusMode = changes.focusMode.newValue;
 });
 
-// Categorize URL
+// Categorize URL with personalized rules
 function categorizeUrl(url) {
   if (!url) return 'neutral';
   
   const domain = new URL(url).hostname.toLowerCase();
+  
+  // Check custom sites first (highest priority)
+  for (const site of customSites) {
+    if (domain.includes(site.domain)) {
+      return site.category;
+    }
+  }
   
   // Check if it's a distraction site
   for (const site of distractionSites) {
@@ -109,6 +116,20 @@ function categorizeUrl(url) {
   }
   
   return 'neutral';
+}
+
+// Block site if in focus mode
+function checkFocusMode(tab) {
+  if (!focusMode || !tab.url) return;
+  
+  const category = categorizeUrl(tab.url);
+  if (category === 'distraction') {
+    // Send message to content script to show focus mode overlay
+    chrome.tabs.sendMessage(tab.id, {
+      action: 'showFocusBlock',
+      site: new URL(tab.url).hostname
+    });
+  }
 }
 
 // Send browsing session to backend

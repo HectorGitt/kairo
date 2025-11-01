@@ -94,7 +94,7 @@ function App() {
           <Route 
             path="/extension-setup" 
             element={
-              user ? <ExtensionSetup user={user} token={token} /> : <Navigate to="/" />
+              user ? <ExtensionSetup user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
             } 
           />
           <Route 

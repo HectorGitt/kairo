@@ -1010,7 +1010,7 @@ function ProfileSettings({ user, token, onLogout }) {
               border: "1px solid rgba(14, 165, 233, 0.1)"
             }}>
               <p style={{ color: "#0284c7", fontSize: "0.875rem", lineHeight: "1.6", margin: 0 }}>
-                💡 <strong>Tip:</strong> After updating your profile or custom rules, download the extension again to sync the latest personalized categorization rules.
+                💡 <strong>Tip:</strong> Your personalization rules automatically sync with the extension in real-time. Just refresh the rules in your extension settings to get the latest updates.
               </p>
             </div>
           </div>

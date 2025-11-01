@@ -211,6 +211,9 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     
     currentTab = tab;
     startTime = Date.now();
+    
+    // Check focus mode
+    checkFocusMode(tab);
   }
 });
 

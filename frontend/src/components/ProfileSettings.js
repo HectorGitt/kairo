@@ -16,10 +16,11 @@ function ProfileSettings({ user, token, onLogout }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [regenerating, setRegenerating] = useState(false);
   
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [useAI, setUseAI] = useState(false);
   
   // Form state
   const [profession, setProfession] = useState("");
@@ -30,8 +31,7 @@ function ProfileSettings({ user, token, onLogout }) {
   const [interests, setInterests] = useState([]);
   const [newInterest, setNewInterest] = useState("");
   
-  // AI regeneration
-  const [showAIForm, setShowAIForm] = useState(false);
+  // AI
   const [aiDescription, setAiDescription] = useState("");
 
   useEffect(() => {

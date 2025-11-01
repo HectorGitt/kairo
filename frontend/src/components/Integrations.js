@@ -368,6 +368,13 @@ function Integrations({ user, token, onLogout }) {
                           Disconnect
                         </Button>
                         <Button
+                          onClick={() => {
+                            if (integration.id === "chrome_extension") {
+                              navigate("/extension-setup");
+                            } else {
+                              toast.info(`Settings for ${integration.name} coming soon`);
+                            }
+                          }}
                           variant="outline"
                           style={{
                             borderRadius: "10px",

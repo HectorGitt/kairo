@@ -225,22 +225,23 @@ function IntegrationDashboard({ user, token, onLogout }) {
             }
 
             return displayMetrics.map((metric, index) => {
-            const MetricIcon = metric.icon;
-            return (
-              <div key={index} className="glassmorphism card-hover" style={{
-                padding: "1.75rem",
-                borderRadius: "20px"
-              }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
-                  <div>
-                    <p style={{ color: "#64748b", fontSize: "0.875rem", marginBottom: "0.5rem" }}>{metric.label}</p>
-                    <h3 style={{ fontSize: "2.25rem", fontWeight: "700", color: integration.color }}>{metric.value}</h3>
+              const MetricIcon = metric.icon;
+              return (
+                <div key={index} className="glassmorphism card-hover" style={{
+                  padding: "1.75rem",
+                  borderRadius: "20px"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+                    <div>
+                      <p style={{ color: "#64748b", fontSize: "0.875rem", marginBottom: "0.5rem" }}>{metric.label}</p>
+                      <h3 style={{ fontSize: "2.25rem", fontWeight: "700", color: integration.color }}>{metric.value}</h3>
+                    </div>
+                    <MetricIcon size={20} style={{ color: integration.color }} />
                   </div>
-                  <MetricIcon size={20} style={{ color: integration.color }} />
                 </div>
-              </div>
-            );
-          })}
+              );
+            });
+          })()}
         </div>
 
         {/* Chrome Extension Management Section */}

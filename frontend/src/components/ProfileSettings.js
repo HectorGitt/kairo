@@ -186,17 +186,38 @@ function ProfileSettings({ user, token, onLogout }) {
             </p>
           </div>
           {!editing && (
-            <Button
-              onClick={() => setEditing(true)}
-              style={{
-                background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-                borderRadius: "10px",
-                padding: "0.75rem 1.5rem"
-              }}
-            >
-              <Edit2 size={18} style={{ marginRight: "0.5rem" }} />
-              Edit Profile
-            </Button>
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <Button
+                onClick={() => {
+                  setEditing(true);
+                  setUseAI(false);
+                }}
+                style={{
+                  flex: 1,
+                  background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                  borderRadius: "10px",
+                  padding: "0.75rem 1.5rem"
+                }}
+              >
+                <Edit2 size={18} style={{ marginRight: "0.5rem" }} />
+                Edit Manually
+              </Button>
+              <Button
+                onClick={() => {
+                  setEditing(true);
+                  setUseAI(true);
+                }}
+                style={{
+                  flex: 1,
+                  background: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                  borderRadius: "10px",
+                  padding: "0.75rem 1.5rem"
+                }}
+              >
+                <Sparkles size={18} style={{ marginRight: "0.5rem" }} />
+                Regenerate with AI
+              </Button>
+            </div>
           )}
         </div>
 

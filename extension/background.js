@@ -130,6 +130,17 @@ chrome.storage.onChanged.addListener((changes) => {
   if (changes.focusMode) focusMode = changes.focusMode.newValue;
 });
 
+// Request notification permission on install
+chrome.runtime.onInstalled.addListener(() => {
+  // Set up keep-alive alarm
+  chrome.alarms.create('keepAlive', { periodInMinutes: 1 });
+  
+  // Request notification permission
+  if (Notification.permission !== 'granted') {
+    Notification.requestPermission();
+  }
+});
+
 // Categorize URL with personalized rules
 function categorizeUrl(url) {
   if (!url) return 'neutral';

@@ -9,6 +9,7 @@ import Dashboard from "@/components/Dashboard";
 import ExtensionSetup from "@/components/ExtensionSetup";
 import Integrations from "@/components/Integrations";
 import IntegrationDashboard from "@/components/IntegrationDashboard";
+import ProfileSetup from "@/components/ProfileSetup";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;

@@ -232,6 +232,42 @@ frontend:
         agent: "main"
         comment: "User requested scroll-to-top after navigating pages. Created ScrollToTop component that uses useLocation hook to detect route changes and scrolls to top instantly. Integrated into App.js inside BrowserRouter."
 
+  - task: "Add SharedNav to ExtensionSetup page"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/components/ExtensionSetup.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "User requested extension setup should share nav with other pages. Replaced custom header with SharedNav component for consistent navigation."
+
+  - task: "Add Cancel button to profile step form"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/components/ProfileSettings.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Added Cancel button to step 1 of manual profile form. Resets editing state and restores original profile data when clicked."
+
+  - task: "Update auto-sync messaging"
+    implemented: true
+    working: "unknown"
+    file: "/app/frontend/src/components/ProfileSettings.js,/app/frontend/src/components/IntegrationDashboard.js"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Updated tip messages to reflect that rules sync automatically via 'Refresh Personalization Rules' button in extension, not by re-downloading extension."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"

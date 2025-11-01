@@ -61,7 +61,8 @@ async function sendSession(tab, timeSpent) {
       title: tab.title || 'Untitled',
       domain: url.hostname,
       category: category,
-      time_spent: Math.floor(timeSpent / 1000) // Convert to seconds
+      time_spent: Math.floor(timeSpent / 1000), // Convert to seconds
+      tab_switches: tabSwitchCount
     };
     
     await fetch(`${apiUrl}/browsing/session`, {
@@ -72,6 +73,9 @@ async function sendSession(tab, timeSpent) {
       },
       body: JSON.stringify(sessionData)
     });
+    
+    // Reset tab switch count for next session
+    tabSwitchCount = 0;
     
     // Show nudge for distractions
     if (category === 'distraction' && timeSpent > 300000) { // 5 minutes

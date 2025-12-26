@@ -11,13 +11,15 @@ function Dashboard({ user, token, onLogout }) {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [weeklyData, setWeeklyData] = useState(null);
-  const [insights, setInsights] = useState(null);
-  const [loadingInsights, setLoadingInsights] = useState(false);
   const [loadingStats, setLoadingStats] = useState(true);
+  /* Removed AI Logic */
+  const [topSites, setTopSites] = useState([]);
+  const [loadingTopSites, setLoadingTopSites] = useState(true);
 
   useEffect(() => {
     fetchStats();
     fetchWeeklySummary();
+    fetchTopSites();
   }, []);
 
   const fetchStats = async () => {
@@ -44,24 +46,23 @@ function Dashboard({ user, token, onLogout }) {
     }
   };
 
-  const generateInsights = async () => {
-    setLoadingInsights(true);
+  const fetchTopSites = async () => {
     try {
-      const response = await axios.post(
-        `${API}/insights/generate`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setInsights(response.data.insights);
-      toast.success("Insights generated!");
-      fetchWeeklySummary(); // Refresh to update attention health
+      const response = await axios.get(`${API}/browsing/history`, {
+        params: { view: "sites", limit: 5 },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data && response.data.history) {
+        setTopSites(response.data.history);
+      }
     } catch (error) {
-      toast.error("Failed to generate insights");
+      console.error("Error fetching top sites:", error);
     } finally {
-      setLoadingInsights(false);
+      setLoadingTopSites(false);
     }
   };
 
+  /* ... formatTime, formatHour helpers ... */
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -346,56 +347,46 @@ function Dashboard({ user, token, onLogout }) {
               )}
             </div>
 
-            {/* AI Insights Section */}
+            {/* Top 5 Activity (New Section) */}
             <div className="glassmorphism" style={{
-              padding: "2.5rem",
+              padding: "2rem",
               borderRadius: "20px",
               marginBottom: "2rem"
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <Sparkles size={28} style={{ color: "#0ea5e9" }} />
-                  <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a" }}>AI Reflection Notes</h3>
-                </div>
-                <Button
-                  data-testid="generate-insights-button"
-                  onClick={generateInsights}
-                  disabled={loadingInsights}
-                  style={{
-                    background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-                    borderRadius: "12px",
-                    padding: "0.75rem 1.5rem"
-                  }}
-                >
-                  {loadingInsights ? "Generating..." : "Generate Today's Insights"}
-                </Button>
+                <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a" }}>Top 5 Activity</h3>
+                <Button variant="ghost" onClick={() => navigate("/history")}>View All</Button>
               </div>
 
-              {insights ? (
-                <div data-testid="insights-content" style={{
-                  background: "linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(56, 189, 248, 0.02) 100%)",
-                  padding: "1.5rem",
-                  borderRadius: "16px",
-                  border: "2px solid rgba(14, 165, 233, 0.1)",
-                  lineHeight: "1.8",
-                  color: "#334155",
-                  whiteSpace: "pre-wrap"
-                }}>
-                  {insights}
+              {loadingTopSites ? (
+                <div className="loader"></div>
+              ) : topSites.length > 0 ? (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
+                        <th style={{ padding: "0.75rem", textAlign: "left", color: "#64748b" }}>Domain</th>
+                        <th style={{ padding: "0.75rem", textAlign: "right", color: "#64748b" }}>Duration</th>
+                        <th style={{ padding: "0.75rem", textAlign: "right", color: "#64748b" }}>Visits</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {topSites.map((site, index) => (
+                        <tr key={index} style={{ borderBottom: "1px solid #f8fafc" }}>
+                          <td style={{ padding: "0.75rem", fontWeight: "500", color: "#334155" }}>{site.domain}</td>
+                          <td style={{ padding: "0.75rem", textAlign: "right", color: "#0f172a", fontWeight: "600" }}>{formatTime(site.total_duration)}</td>
+                          <td style={{ padding: "0.75rem", textAlign: "right", color: "#64748b" }}>{site.visit_count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
-                <div style={{
-                  textAlign: "center",
-                  padding: "3rem",
-                  color: "#94a3b8"
-                }}>
-                  <Sparkles size={48} style={{ margin: "0 auto 1rem", opacity: 0.5 }} />
-                  <p>Click "Generate Today's Insights" to get personalized feedback from your AI accountability partner</p>
-                </div>
+                <p style={{ color: "#64748b" }}>No activity recorded yet.</p>
               )}
             </div>
 
-            {/* Top Sites Grid */}
+            {/* Top Sites Grid - Productive vs Distracting */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
               {/* Top Distractions */}
               {stats.top_distractions && stats.top_distractions.length > 0 && (
@@ -502,7 +493,7 @@ function Dashboard({ user, token, onLogout }) {
           </div>
         )}
       </main>
-    </div>
+    </div >
   );
 }
 

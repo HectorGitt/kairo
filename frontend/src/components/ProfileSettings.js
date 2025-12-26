@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, X, Sparkles, Save, CheckCircle, Edit2, ChevronRight, ChevronLeft, Activity, Target, Award, TrendingUp, Chrome, Download } from "lucide-react";
+import { Plus, X, Zap, Save, CheckCircle, Edit2, ChevronRight, ChevronLeft, Activity, Target, Award, TrendingUp, Chrome, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import SharedNav from "@/components/SharedNav";
@@ -227,7 +227,7 @@ function ProfileSettings({ user, token, onLogout }) {
                   padding: "0.75rem 1.5rem"
                 }}
               >
-                <Sparkles size={18} style={{ marginRight: "0.5rem" }} />
+                <Zap size={18} style={{ marginRight: "0.5rem" }} />
                 Regenerate with AI
               </Button>
             </div>
@@ -241,7 +241,7 @@ function ProfileSettings({ user, token, onLogout }) {
               /* AI Form */
               <div>
                 <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-                  <Sparkles size={48} style={{ color: "#8b5cf6", margin: "0 auto 1rem" }} />
+                  <Zap size={48} style={{ color: "#8b5cf6", margin: "0 auto 1rem" }} />
                   <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.5rem" }}>
                     Regenerate with AI
                   </h3>
@@ -280,12 +280,12 @@ function ProfileSettings({ user, token, onLogout }) {
                   >
                     {saving ? (
                       <>
-                        <Sparkles size={18} style={{ marginRight: "0.5rem", animation: "spin 1s linear infinite" }} />
+                        <Zap size={18} style={{ marginRight: "0.5rem", animation: "spin 1s linear infinite" }} />
                         Generating...
                       </>
                     ) : (
                       <>
-                        <Sparkles size={18} style={{ marginRight: "0.5rem" }} />
+                        <Zap size={18} style={{ marginRight: "0.5rem" }} />
                         Generate & Save
                       </>
                     )}

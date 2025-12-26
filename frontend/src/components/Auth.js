@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Brain, Sparkles, Target, TrendingUp } from "lucide-react";
+import { Brain, Zap, Target, TrendingUp } from "lucide-react";
 import { API } from "@/config";
 
 function Auth({ onLogin }) {
@@ -131,7 +131,7 @@ function Auth({ onLogin }) {
                 padding: "0.75rem",
                 flexShrink: 0
               }}>
-                <Sparkles size={24} style={{ color: "white" }} />
+                <Zap size={24} style={{ color: "white" }} />
               </div>
               <div>
                 <h3 style={{ fontSize: "1.125rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.25rem" }}>Real-time Awareness</h3>

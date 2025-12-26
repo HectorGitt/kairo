@@ -19,7 +19,7 @@ function SharedNav({ user, onLogout }) {
       top: 0,
       zIndex: 100
     }}>
-      <div 
+      <div
         style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }}
         onClick={() => navigate("/dashboard")}
       >
@@ -36,7 +36,7 @@ function SharedNav({ user, onLogout }) {
         <Button
           variant="ghost"
           onClick={() => navigate("/dashboard")}
-          style={{ 
+          style={{
             color: isActive("/dashboard") ? "#0ea5e9" : "#64748b",
             fontWeight: isActive("/dashboard") ? "600" : "500"
           }}
@@ -45,8 +45,18 @@ function SharedNav({ user, onLogout }) {
         </Button>
         <Button
           variant="ghost"
+          onClick={() => navigate("/history")}
+          style={{
+            color: isActive("/history") ? "#0ea5e9" : "#64748b",
+            fontWeight: isActive("/history") ? "600" : "500"
+          }}
+        >
+          History
+        </Button>
+        <Button
+          variant="ghost"
           onClick={() => navigate("/integrations")}
-          style={{ 
+          style={{
             color: isActive("/integrations") || location.pathname.startsWith("/integrations/") ? "#0ea5e9" : "#64748b",
             fontWeight: isActive("/integrations") || location.pathname.startsWith("/integrations/") ? "600" : "500"
           }}
@@ -56,7 +66,7 @@ function SharedNav({ user, onLogout }) {
         <Button
           variant="ghost"
           onClick={() => navigate("/profile")}
-          style={{ 
+          style={{
             color: isActive("/profile") ? "#0ea5e9" : "#64748b",
             fontWeight: isActive("/profile") ? "600" : "500"
           }}

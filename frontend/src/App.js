@@ -11,6 +11,7 @@ import Integrations from "@/components/Integrations";
 import IntegrationDashboard from "@/components/IntegrationDashboard";
 import ProfileSetup from "@/components/ProfileSetup";
 import ProfileSettings from "@/components/ProfileSettings";
+import BrowsingHistory from "@/components/BrowsingHistory";
 import ScrollToTop from "@/components/ScrollToTop";
 import { API } from "@/config";
 
@@ -87,6 +88,12 @@ function App() {
             path="/dashboard"
             element={
               user ? <Dashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              user ? <BrowsingHistory user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
             }
           />
           <Route

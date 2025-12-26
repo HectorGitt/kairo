@@ -7,9 +7,13 @@ import { toast } from "sonner";
 import Auth from "@/components/Auth";
 import Dashboard from "@/components/Dashboard";
 import ExtensionSetup from "@/components/ExtensionSetup";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import Integrations from "@/components/Integrations";
+import IntegrationDashboard from "@/components/IntegrationDashboard";
+import ProfileSetup from "@/components/ProfileSetup";
+import ProfileSettings from "@/components/ProfileSettings";
+import BrowsingHistory from "@/components/BrowsingHistory";
+import ScrollToTop from "@/components/ScrollToTop";
+import { API } from "@/config";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -72,24 +76,55 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
               !user ? <Auth onLogin={handleLogin} /> : <Navigate to="/dashboard" />
-            } 
+            }
           />
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               user ? <Dashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
-            } 
+            }
           />
-          <Route 
-            path="/extension-setup" 
+          <Route
+            path="/history"
             element={
-              user ? <ExtensionSetup user={user} token={token} /> : <Navigate to="/" />
-            } 
+              user ? <BrowsingHistory user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/extension-setup"
+            element={
+              user ? <ExtensionSetup user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/integrations"
+            element={
+              user ? <Integrations user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/integrations/:integrationId"
+            element={
+              user ? <IntegrationDashboard user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/profile-setup"
+            element={
+              user ? <ProfileSetup user={user} token={token} /> : <Navigate to="/" />
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              user ? <ProfileSettings user={user} token={token} onLogout={handleLogout} /> : <Navigate to="/" />
+            }
           />
         </Routes>
       </BrowserRouter>

@@ -80,33 +80,64 @@ if (config.enableVisualEdits) {
   };
 }
 
-// Setup dev server with visual edits and/or health check
-if (config.enableVisualEdits || config.enableHealthCheck) {
-  webpackConfig.devServer = (devServerConfig) => {
-    // Apply visual edits dev server setup if enabled
-    if (config.enableVisualEdits && setupDevServer) {
-      devServerConfig = setupDevServer(devServerConfig);
-    }
+// Setup dev server with deprecation fix, visual edits, and/or health check
+webpackConfig.devServer = (devServerConfig) => {
+  // 1. Fix Deprecation Warnings from react-scripts 5.0.1
+  // Move onBeforeSetupMiddleware and onAfterSetupMiddleware to setupMiddlewares
+  if (devServerConfig.onBeforeSetupMiddleware || devServerConfig.onAfterSetupMiddleware) {
+    const originalOnBefore = devServerConfig.onBeforeSetupMiddleware;
+    const originalOnAfter = devServerConfig.onAfterSetupMiddleware;
 
-    // Add health check endpoints if enabled
-    if (config.enableHealthCheck && setupHealthEndpoints && healthPluginInstance) {
-      const originalSetupMiddlewares = devServerConfig.setupMiddlewares;
+    // Use setupMiddlewares (new API) instead
+    const originalSetupMiddlewares = devServerConfig.setupMiddlewares;
 
-      devServerConfig.setupMiddlewares = (middlewares, devServer) => {
-        // Call original setup if exists
-        if (originalSetupMiddlewares) {
-          middlewares = originalSetupMiddlewares(middlewares, devServer);
-        }
+    devServerConfig.setupMiddlewares = (middlewares, devServer) => {
+      // Run "before" logic
+      if (originalOnBefore) {
+        originalOnBefore(devServer);
+      }
 
-        // Setup health endpoints
-        setupHealthEndpoints(devServer, healthPluginInstance);
+      // Run original setupMiddlewares if present
+      if (originalSetupMiddlewares) {
+        middlewares = originalSetupMiddlewares(middlewares, devServer);
+      }
 
-        return middlewares;
-      };
-    }
+      // Run "after" logic
+      if (originalOnAfter) {
+        originalOnAfter(devServer);
+      }
 
-    return devServerConfig;
-  };
-}
+      return middlewares;
+    };
+
+    // Remove the old keys so webpack-dev-server doesn't see them and warn
+    delete devServerConfig.onBeforeSetupMiddleware;
+    delete devServerConfig.onAfterSetupMiddleware;
+  }
+
+  // 2. Apply visual edits dev server setup if enabled
+  if (config.enableVisualEdits && setupDevServer) {
+    devServerConfig = setupDevServer(devServerConfig);
+  }
+
+  // 3. Add health check endpoints if enabled
+  if (config.enableHealthCheck && setupHealthEndpoints && healthPluginInstance) {
+    const originalSetupMiddlewares = devServerConfig.setupMiddlewares;
+
+    devServerConfig.setupMiddlewares = (middlewares, devServer) => {
+      // Call original setup if exists
+      if (originalSetupMiddlewares) {
+        middlewares = originalSetupMiddlewares(middlewares, devServer);
+      }
+
+      // Setup health endpoints
+      setupHealthEndpoints(devServer, healthPluginInstance);
+
+      return middlewares;
+    };
+  }
+
+  return devServerConfig;
+};
 
 module.exports = webpackConfig;

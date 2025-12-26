@@ -7,10 +7,11 @@ Kairo is a productivity tool that helps you stay focused by tracking your browsi
 - Python 3.8+
 - Node.js 16+
 - Google Gemini API Key
+- PostgreSQL Database
 
 ## Quick Start
 
-### 1. Backend (FastAPI + SQLite)
+### 1. Backend (FastAPI + PostgreSQL)
 
 Open a terminal in the `backend` directory:
 
@@ -27,11 +28,11 @@ $env:GEMINI_API_KEY = "your_api_key_here"
 # Set your Database URL (PostgreSQL)
 $env:DATABASE_URL = "postgresql://user:password@localhost:5432/kairo"
 # Run the server
-python -m uvicorn server:app --reload --host 127.0.0.1 --port 8000
+python -m uvicorn server:app --reload --host 127.0.0.1 --port 5000
 ```
 
-The API will be available at `http://localhost:8000`.
-Documentation: `http://localhost:8000/docs`.
+The API will be available at `http://localhost:5000`.
+Documentation: `http://localhost:5000/docs`.
 
 ### 2. Frontend (React)
 
@@ -52,5 +53,5 @@ The application will open at `http://localhost:3000`.
 - **Frontend**: React, Lucide Icons, Axios
 
 ## Troubleshooting
-- **Login Error**: Ensure the backend is running on port 8000.
+- **Login Error**: Ensure the backend is running on port 5000.
 - **AI Insights Failed**: Ensure `GEMINI_API_KEY` is set in your environment variables.

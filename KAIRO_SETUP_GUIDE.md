@@ -12,8 +12,7 @@ Kairo is your AI-powered accountability partner that helps you stay focused and 
 ## 🚀 Quick Start
 
 ### 1. Access the Web App
-### 1. Access the Web App
-Visit: `http://localhost:3000` (or `http://localhost:8000/docs` for API)
+Visit: `http://localhost:3000` (or `http://localhost:5000/docs` for API)
 
 ### 2. Create Your Account
 - Click "Need an account? Sign up"
@@ -47,7 +46,7 @@ extension/
 
 #### Configure Extension
 1. Click the Kairo extension icon
-2. Enter your **API URL**: Copy from the dashboard setup page
+2. Enter your **API URL**: Copy from the dashboard setup page (default: `http://localhost:5000`)
 3. Enter your **Auth Token**: Copy from the dashboard setup page
 4. Click "Save Settings"
 5. Status should change to "Active & Tracking"
@@ -60,6 +59,7 @@ extension/
 - **Focus Score**: Daily productivity metric (0-100)
 - **Time Tracking**: Total, productive, and distraction time
 - **AI Insights**: Personalized feedback from Google Gemini
+- **Browsing History**: Detailed activity logs and top sites analysis
 - **Top Distractions**: See which sites pull you away most
 - **Weekly Trends**: Track improvement over time
 
@@ -81,19 +81,20 @@ extension/
 - `POST /api/auth/login` - Login and get JWT token
 - `POST /api/browsing/session` - Log browsing session
 - `GET /api/browsing/stats` - Get focus statistics
+- `GET /api/browsing/history` - Get history log and aggregated site data
 - `POST /api/insights/generate` - Generate AI insights
 - `GET /api/insights/daily` - Get recent insights
 
 ### AI Integration
 - **Provider**: Google Gemini
-- **Model**: gemini-1.5-flash
+- **Model**: gemini-pro / gemini-1.5-flash
 - **Purpose**: Personalized insights and actionable recommendations
 - **Style**: Empathetic, encouraging, and constructive feedback
 
 ### Data Privacy
 - All data is private to your account
 - No third-party sharing
-- Stored securely in MongoDB
+- Stored securely in PostgreSQL
 - You control your data
 
 ---
@@ -177,8 +178,7 @@ if (category === 'distraction' && timeSpent > 300000) { // 5 minutes
 ### Environment Variables
 ```bash
 # Backend (.env)
-MONGO_URL=mongodb://localhost:27017
-DB_NAME=kairo_db
+DATABASE_URL=postgresql://user:password@localhost:5432/kairo
 JWT_SECRET=your_secret_key
 GEMINI_API_KEY=your_gemini_api_key
 ```
@@ -186,12 +186,14 @@ GEMINI_API_KEY=your_gemini_api_key
 ### Testing
 Run comprehensive tests:
 ```bash
-python /app/backend_test.py
+python ./backend_test.py
 ```
 
-### Logs
-- Backend: `/var/log/supervisor/backend.*.log`
-- Extension: Chrome DevTools → Extensions → Kairo → Inspect views
+### Docker
+Build the backend container:
+```bash
+docker build -t kairo-backend ./backend
+```
 
 ---
 
@@ -227,6 +229,6 @@ For issues or questions:
 
 ---
 
-**Built with:** FastAPI, React, MongoDB, Google Gemini, Chrome Extensions API
+**Built with:** FastAPI, React, PostgreSQL, Google Gemini, Chrome Extensions API
 **Focus approach:** Gentle, empathetic, progress-oriented
 **Philosophy:** Awareness → Intention → Consistency → Mastery

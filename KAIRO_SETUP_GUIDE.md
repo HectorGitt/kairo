@@ -12,7 +12,8 @@ Kairo is your AI-powered accountability partner that helps you stay focused and 
 ## 🚀 Quick Start
 
 ### 1. Access the Web App
-Visit: `https://mindful-tabs-1.preview.emergentagent.com`
+### 1. Access the Web App
+Visit: `http://localhost:3000` (or `http://localhost:8000/docs` for API)
 
 ### 2. Create Your Account
 - Click "Need an account? Sign up"
@@ -58,7 +59,7 @@ extension/
 ### Web Dashboard
 - **Focus Score**: Daily productivity metric (0-100)
 - **Time Tracking**: Total, productive, and distraction time
-- **AI Insights**: Personalized feedback from Claude Sonnet 4
+- **AI Insights**: Personalized feedback from Google Gemini
 - **Top Distractions**: See which sites pull you away most
 - **Weekly Trends**: Track improvement over time
 
@@ -84,7 +85,8 @@ extension/
 - `GET /api/insights/daily` - Get recent insights
 
 ### AI Integration
-- **Provider**: Claude Sonnet 4 (Anthropic)
+- **Provider**: Google Gemini
+- **Model**: gemini-1.5-flash
 - **Purpose**: Personalized insights and actionable recommendations
 - **Style**: Empathetic, encouraging, and constructive feedback
 
@@ -108,7 +110,7 @@ extension/
 ### AI Insights Generation
 1. Collect day's browsing data
 2. Calculate focus metrics
-3. Send to Claude Sonnet 4
+3. Send to Google Gemini
 4. Receive personalized insights
 5. Store and display on dashboard
 
@@ -165,7 +167,7 @@ if (category === 'distraction' && timeSpent > 300000) { // 5 minutes
 ### AI Insights Not Generating
 1. Ensure you have browsing data for the day
 2. Click "Generate Today's Insights"
-3. Wait 5-10 seconds for Claude to respond
+3. Wait 5-10 seconds for Gemini to respond
 4. Check backend logs for errors
 
 ---
@@ -178,7 +180,7 @@ if (category === 'distraction' && timeSpent > 300000) { // 5 minutes
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=kairo_db
 JWT_SECRET=your_secret_key
-EMERGENT_LLM_KEY=sk-emergent-xxx
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ### Testing
@@ -225,6 +227,6 @@ For issues or questions:
 
 ---
 
-**Built with:** FastAPI, React, MongoDB, Claude Sonnet 4, Chrome Extensions API
+**Built with:** FastAPI, React, MongoDB, Google Gemini, Chrome Extensions API
 **Focus approach:** Gentle, empathetic, progress-oriented
 **Philosophy:** Awareness → Intention → Consistency → Mastery

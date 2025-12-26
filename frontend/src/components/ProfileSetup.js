@@ -7,16 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Brain, Sparkles, Plus, X, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/config";
 
 function ProfileSetup({ user, token, onComplete }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [useAI, setUseAI] = useState(true);
-  
+
   // Manual form state
   const [profession, setProfession] = useState("");
   const [workFocus, setWorkFocus] = useState([]);
@@ -25,7 +23,7 @@ function ProfileSetup({ user, token, onComplete }) {
   const [newSite, setNewSite] = useState({ domain: "", category: "productive", reason: "" });
   const [interests, setInterests] = useState([]);
   const [newInterest, setNewInterest] = useState("");
-  
+
   // AI form state
   const [aiDescription, setAiDescription] = useState("");
 
@@ -78,7 +76,7 @@ function ProfileSetup({ user, token, onComplete }) {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       toast.success("Profile created successfully!");
       if (onComplete) onComplete();
       navigate("/dashboard");
@@ -91,7 +89,7 @@ function ProfileSetup({ user, token, onComplete }) {
 
   const handleAIGenerate = async (e) => {
     e.preventDefault();
-    
+
     if (!aiDescription.trim()) {
       toast.error("Please describe your work and interests");
       return;
@@ -105,7 +103,7 @@ function ProfileSetup({ user, token, onComplete }) {
         { description: aiDescription },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       toast.success("AI profile generated! Redirecting...");
       if (onComplete) onComplete();
       setTimeout(() => navigate("/dashboard"), 1500);
@@ -126,7 +124,7 @@ function ProfileSetup({ user, token, onComplete }) {
             Personalize Your Kairo Experience
           </h1>
           <p style={{ fontSize: "1.125rem", color: "#64748b", lineHeight: "1.7" }}>
-            Help Kairo understand your work and interests so we can provide personalized focus tracking. 
+            Help Kairo understand your work and interests so we can provide personalized focus tracking.
             What's productive for you might be a distraction for others.
           </p>
         </div>

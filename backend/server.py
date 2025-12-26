@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Header
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Header, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
@@ -948,6 +948,83 @@ async def get_categorization_rules(current_user: User = Depends(get_current_user
         "profile_set": bool(profile.get('profession', '')),
         "profession": profile.get('profession', ''),
         "work_focus": profile.get('work_focus', [])
+    }
+
+
+@api_router.get("/browsing/history")
+async def get_browsing_history(
+    view: str = Query("log"),
+    page: int = Query(1, ge=1),
+    limit: int = Query(50, ge=1, le=100),
+    current_user: User = Depends(get_current_user)
+):
+    if not DB_POOL:
+        raise HTTPException(status_code=500, detail="Database not available")
+        
+    offset = (page - 1) * limit
+    
+    async with DB_POOL.acquire() as conn:
+        if view == "log":
+            # Detailed chronological log
+            query = """
+                SELECT domain, timestamp, time_spent, category
+                FROM browsing_sessions
+                WHERE user_id = $1
+                ORDER BY timestamp DESC
+                LIMIT $2 OFFSET $3
+            """
+            rows = await conn.fetch(query, current_user.id, limit, offset)
+            
+            # Get total count for pagination
+            count_query = "SELECT COUNT(*) FROM browsing_sessions WHERE user_id = $1"
+            total_count = await conn.fetchval(count_query, current_user.id)
+            
+            history = [
+                {
+                    "domain": row["domain"],
+                    "start_time": row["timestamp"], # timestamp is TEXT in schema, so it's already a string? 
+                                                    # In schema: timestamp TEXT NOT NULL. 
+                                                    # In code likely stored as ISO string. 
+                                                    # So I don't need .isoformat() if it's already text.
+                                                    # But if asyncpg returns it as string, I'm good.
+                                                    # Let's assume it is stored as ISO string.
+                    "duration": row["time_spent"],
+                    "status": row["category"]
+                }
+                for row in rows
+            ]
+            
+        else:  # view == "sites"
+            # Aggregated by domain
+            query = """
+                SELECT domain, SUM(time_spent) as total_duration, COUNT(*) as visit_count
+                FROM browsing_sessions
+                WHERE user_id = $1
+                GROUP BY domain
+                ORDER BY total_duration DESC
+                LIMIT $2 OFFSET $3
+            """
+            rows = await conn.fetch(query, current_user.id, limit, offset)
+            
+            # Get total unique domains count
+            count_query = "SELECT COUNT(DISTINCT domain) FROM browsing_sessions WHERE user_id = $1"
+            total_count = await conn.fetchval(count_query, current_user.id)
+            
+            history = [
+                {
+                    "domain": row["domain"],
+                    "total_duration": row["total_duration"],
+                    "visit_count": row["visit_count"]
+                }
+                for row in rows
+            ]
+    
+    return {
+        "history": history,
+        "total": total_count,
+        "page": page,
+        "limit": limit,
+        "pages": (total_count + limit - 1) // limit
     }
 
 # ==================== INTEGRATIONS ROUTES ====================

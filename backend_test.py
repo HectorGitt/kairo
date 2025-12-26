@@ -418,6 +418,47 @@ class KairoAPITester:
         )
         return success
 
+    def test_browsing_history(self):
+        """Test browsing history endpoint"""
+        print("\nTesting Browsing History...")
+        
+        if not self.token:
+            self.log_test("Browsing History", False, "No auth token available")
+            return False
+
+        # Test Log View
+        success_log, response_log = self.run_test(
+            "Browsing History (Log View)",
+            "GET", 
+            "browsing/history?view=log&page=1&limit=10",
+            200
+        )
+        
+        if success_log and "history" in response_log:
+            print(f"  Log View: Retrieved {len(response_log['history'])} entries")
+        
+        # Test Sites View
+        success_sites, response_sites = self.run_test(
+            "Browsing History (Sites View)",
+            "GET", 
+            "browsing/history?view=sites&page=1&limit=10",
+            200
+        )
+        
+        if success_sites and "history" in response_sites:
+            print(f"  Sites View: Retrieved {len(response_sites['history'])} entries")
+            # Verify aggregation fields exist
+            if len(response_sites['history']) > 0:
+                site = response_sites['history'][0]
+                if "total_duration" in site and "visit_count" in site:
+                    self.log_test("Browsing History (Sites) Aggregation", True, "Contains aggregation fields")
+                else:
+                    self.log_test("Browsing History (Sites) Aggregation", False, "Missing Aggregation Fields")
+            else:
+                self.log_test("Browsing History (Sites) Aggregation", True, "Empty History (no aggregation to check)")
+        
+        return success_log and success_sites
+
     def run_all_tests(self):
         """Run all API tests"""
         print("Starting Kairo API Tests")

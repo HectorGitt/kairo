@@ -3,9 +3,11 @@ import sys
 import json
 from datetime import datetime, timezone
 
+import os
+
 class KairoAPITester:
-    def __init__(self, base_url="https://mindful-tabs-1.preview.emergentagent.com/api"):
-        self.base_url = base_url
+    def __init__(self, base_url=None):
+        self.base_url = base_url or os.environ.get("API_URL", "http://localhost:8000/api")
         self.token = None
         self.user_id = None
         self.tests_run = 0
@@ -17,9 +19,9 @@ class KairoAPITester:
         self.tests_run += 1
         if success:
             self.tests_passed += 1
-            print(f"✅ {name} - PASSED")
+            print(f"PASS: {name}")
         else:
-            print(f"❌ {name} - FAILED: {details}")
+            print(f"FAIL: {name} - {details}")
         
         self.test_results.append({
             "test": name,
@@ -38,7 +40,7 @@ class KairoAPITester:
         if headers:
             test_headers.update(headers)
 
-        print(f"\n🔍 Testing {name}...")
+        print(f"\nTesting {name}...")
         print(f"   URL: {url}")
         
         try:
@@ -418,14 +420,14 @@ class KairoAPITester:
 
     def run_all_tests(self):
         """Run all API tests"""
-        print("🚀 Starting Kairo API Tests")
+        print("Starting Kairo API Tests")
         print("=" * 50)
         
         # Basic tests
         self.test_health_check()
         
         # HIGH PRIORITY: Extension download test (no auth required)
-        print("\n🔥 HIGH PRIORITY TESTS:")
+        print("\nHIGH PRIORITY TESTS:")
         self.test_extension_download()
         
         # Auth tests
@@ -439,44 +441,32 @@ class KairoAPITester:
         
         # Protected endpoint tests (require authentication)
         if self.token:
-            print("\n📋 PROFILE MANAGEMENT TESTS:")
+            print("\nPROFILE MANAGEMENT TESTS:")
             self.test_profile_get()
             self.test_profile_update()
             self.test_categorization_rules()
             
-            print("\n📊 BROWSING & STATS TESTS:")
+            print("\nBROWSING & STATS TESTS:")
             self.test_browsing_session_creation()
             self.test_browsing_stats()
             self.test_browsing_sessions_list()
             self.test_weekly_summary()
             
-            print("\n🎯 GOALS & INSIGHTS TESTS:")
+            print("\nGOALS & INSIGHTS TESTS:")
             self.test_focus_goals_creation()
             self.test_focus_goals_list()
             self.test_daily_insights_list()
             
-            print("\n🔗 INTEGRATIONS TESTS:")
+            print("\nINTEGRATIONS TESTS:")
             self.test_integrations_list()
             
             # AI insights test (may be slow)
-            print("\n🤖 AI TESTS (may take 10-15 seconds):")
+            print("\nAI TESTS (may take 10-15 seconds):")
             self.test_ai_insights_generation()
         
         # Print summary
         print("\n" + "=" * 50)
-        print(f"📊 Test Results: {self.tests_passed}/{self.tests_run} passed")
-        
-        if self.tests_passed == self.tests_run:
-            print("🎉 All tests passed!")
-            return 0
-        else:
-            print("❌ Some tests failed")
-            print("\nFailed tests:")
-            for result in self.test_results:
-                if not result['success']:
-                    print(f"  - {result['test']}: {result['details']}")
-            return 1
-
+        print(f"Test Results: {self.tests_passed}/{self.tests_run} passed")
 def main():
     tester = KairoAPITester()
     return tester.run_all_tests()

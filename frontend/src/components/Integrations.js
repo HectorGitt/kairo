@@ -5,9 +5,7 @@ import { Calendar, MessageSquare, Activity, FileText, Chrome, ArrowRight, CheckC
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import SharedNav from "@/components/SharedNav";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/config";
 
 const INTEGRATIONS = [
   {
@@ -481,7 +479,7 @@ function Integrations({ user, token, onLogout }) {
           textAlign: "center",
           cursor: "pointer"
         }}
-        onClick={() => navigate("/integrations/overview")}
+          onClick={() => navigate("/integrations/overview")}
         >
           <BarChart3 size={48} style={{ color: "#0ea5e9", margin: "0 auto 1rem" }} />
           <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.5rem" }}>View Overall Dashboard</h3>

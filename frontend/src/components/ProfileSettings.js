@@ -8,22 +8,20 @@ import { Plus, X, Sparkles, Save, CheckCircle, Edit2, ChevronRight, ChevronLeft,
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import SharedNav from "@/components/SharedNav";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/config";
 
 function ProfileSettings({ user, token, onLogout }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  
+
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [useAI, setUseAI] = useState(false);
   const [categorizationRules, setCategorizationRules] = useState(null);
   const [editingRules, setEditingRules] = useState(false);
-  
+
   // Form state
   const [profession, setProfession] = useState("");
   const [workFocus, setWorkFocus] = useState([]);
@@ -32,7 +30,7 @@ function ProfileSettings({ user, token, onLogout }) {
   const [newSite, setNewSite] = useState({ domain: "", category: "productive", reason: "" });
   const [interests, setInterests] = useState([]);
   const [newInterest, setNewInterest] = useState("");
-  
+
   // AI
   const [aiDescription, setAiDescription] = useState("");
 
@@ -47,7 +45,7 @@ function ProfileSettings({ user, token, onLogout }) {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProfile(response.data);
-      
+
       // Populate form
       setProfession(response.data.profession || "");
       setWorkFocus(response.data.work_focus || []);
@@ -103,11 +101,12 @@ function ProfileSettings({ user, token, onLogout }) {
         );
         toast.success("Profile updated successfully!");
       }
-      
+
       setEditing(false);
       setUseAI(false);
       setCurrentStep(1);
       fetchProfile();
+      fetchCategorizationRules();
       toast.success("Extension rules will refresh automatically");
     } catch (error) {
       toast.error("Failed to update profile");
@@ -193,7 +192,7 @@ function ProfileSettings({ user, token, onLogout }) {
               </h3>
             </div>
             <p style={{ color: "#64748b", fontSize: "0.9375rem" }}>
-              {profile?.profession 
+              {profile?.profession
                 ? `Personalization active for ${profession || "your role"}`
                 : "Set up your profile to get personalized focus tracking"
               }
@@ -250,7 +249,7 @@ function ProfileSettings({ user, token, onLogout }) {
                     Describe your work and Claude Sonnet 4 will build your profile
                   </p>
                 </div>
-                
+
                 <Textarea
                   value={aiDescription}
                   onChange={(e) => setAiDescription(e.target.value)}
@@ -359,44 +358,44 @@ function ProfileSettings({ user, token, onLogout }) {
                         style={{ padding: "0.875rem", borderRadius: "10px", border: "2px solid #e2e8f0", fontSize: "1rem" }}
                       />
                     </div>
-                <div style={{ display: "flex", gap: "1rem" }}>
-                  <Button
-                    onClick={() => {
-                      setEditing(false);
-                      setCurrentStep(1);
-                      // Reset form to current profile data
-                      setProfession(profile?.profession || "");
-                      setWorkFocus(profile?.work_focus || []);
-                      setImportantSites(profile?.important_sites || []);
-                      setInterests(profile?.interests || []);
-                    }}
-                    variant="outline"
-                    style={{
-                      flex: 1,
-                      padding: "0.875rem",
-                      borderRadius: "10px",
-                      border: "2px solid #e2e8f0"
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => setCurrentStep(2)}
-                    disabled={!profession.trim()}
-                    style={{
-                      flex: 1,
-                      width: "100%",
-                      padding: "0.875rem",
-                      background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-                      borderRadius: "10px",
-                      fontSize: "1rem",
-                      fontWeight: "600"
-                    }}
-                  >
-                    Next Step
-                    <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
-                  </Button>
-                </div>
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <Button
+                        onClick={() => {
+                          setEditing(false);
+                          setCurrentStep(1);
+                          // Reset form to current profile data
+                          setProfession(profile?.profession || "");
+                          setWorkFocus(profile?.work_focus || []);
+                          setImportantSites(profile?.important_sites || []);
+                          setInterests(profile?.interests || []);
+                        }}
+                        variant="outline"
+                        style={{
+                          flex: 1,
+                          padding: "0.875rem",
+                          borderRadius: "10px",
+                          border: "2px solid #e2e8f0"
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => setCurrentStep(2)}
+                        disabled={!profession.trim()}
+                        style={{
+                          flex: 1,
+                          width: "100%",
+                          padding: "0.875rem",
+                          background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+                          borderRadius: "10px",
+                          fontSize: "1rem",
+                          fontWeight: "600"
+                        }}
+                      >
+                        Next Step
+                        <ChevronRight size={18} style={{ marginLeft: "0.5rem" }} />
+                      </Button>
+                    </div>
                   </div>
                 )}
 
@@ -406,7 +405,7 @@ function ProfileSettings({ user, token, onLogout }) {
                     <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
                       Step 2: Work Focus Areas
                     </h3>
-                    
+
                     <div style={{ marginBottom: "2rem" }}>
                       <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
                         What are your main work focus areas?
@@ -487,7 +486,7 @@ function ProfileSettings({ user, token, onLogout }) {
                     <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
                       Step 3: Personal Interests
                     </h3>
-                    
+
                     <div style={{ marginBottom: "2rem" }}>
                       <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
                         What are you interested in?
@@ -568,7 +567,7 @@ function ProfileSettings({ user, token, onLogout }) {
                     <h3 style={{ fontSize: "1.25rem", fontWeight: "600", color: "#0f172a", marginBottom: "1rem" }}>
                       Step 4: Custom Site Rules
                     </h3>
-                    
+
                     <div style={{ marginBottom: "2rem" }}>
                       <Label style={{ marginBottom: "0.5rem", display: "block", fontWeight: "600" }}>
                         Add Custom Site Categorization
@@ -589,9 +588,9 @@ function ProfileSettings({ user, token, onLogout }) {
                         <select
                           value={newSite.category}
                           onChange={(e) => setNewSite({ ...newSite, category: e.target.value })}
-                          style={{ 
-                            padding: "0.75rem", 
-                            borderRadius: "10px", 
+                          style={{
+                            padding: "0.75rem",
+                            borderRadius: "10px",
                             border: "2px solid #e2e8f0",
                             fontSize: "0.875rem",
                             fontFamily: "inherit",
@@ -616,7 +615,7 @@ function ProfileSettings({ user, token, onLogout }) {
                           }}
                           style={{ padding: "0.75rem", borderRadius: "10px", border: "2px solid #e2e8f0" }}
                         />
-                        <Button 
+                        <Button
                           onClick={(e) => {
                             e.preventDefault();
                             handleAddSite();
@@ -791,7 +790,7 @@ function ProfileSettings({ user, token, onLogout }) {
                   Your Categorization Rules
                 </h3>
                 <p style={{ color: "#64748b", fontSize: "0.9375rem" }}>
-                  {categorizationRules.profile_set 
+                  {categorizationRules.profile_set
                     ? `Active rules based on your profile as ${profession || "your role"}`
                     : "Default rules (set up your profile for personalization)"
                   }

@@ -5,9 +5,7 @@ import { ArrowLeft, Calendar, MessageSquare, Activity, FileText, Chrome, Trendin
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import SharedNav from "@/components/SharedNav";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/config";
 
 const INTEGRATION_DETAILS = {
   chrome_extension: {
@@ -75,8 +73,8 @@ function IntegrationDashboard({ user, token, onLogout }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (integrationId === 'chrome_extension' || integrationId === 'edge_extension' || 
-        integrationId === 'firefox_extension' || integrationId === 'safari_extension') {
+    if (integrationId === 'chrome_extension' || integrationId === 'edge_extension' ||
+      integrationId === 'firefox_extension' || integrationId === 'safari_extension') {
       fetchRealStats();
     }
   }, [integrationId]);
@@ -201,11 +199,11 @@ function IntegrationDashboard({ user, token, onLogout }) {
             const isBrowserExtension = browserExtensions.includes(integrationId);
 
             let displayMetrics = [];
-            
+
             if (isBrowserExtension && stats) {
               // Use real data from backend
-              const focusRatio = stats.total_time > 0 
-                ? Math.round((stats.focus_time / stats.total_time) * 100) 
+              const focusRatio = stats.total_time > 0
+                ? Math.round((stats.focus_time / stats.total_time) * 100)
                 : 0;
               const peakHour = weeklyData?.peak_hours?.[0]?.hour || 0;
               const attentionScore = weeklyData?.attention_health || 0;
@@ -253,7 +251,7 @@ function IntegrationDashboard({ user, token, onLogout }) {
             border: "2px solid rgba(14, 165, 233, 0.2)"
           }}>
             <h3 style={{ fontSize: "1.5rem", fontWeight: "600", color: "#0f172a", marginBottom: "1.5rem" }}>Extension Management</h3>
-            
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
               <div style={{ background: "white", padding: "1.5rem", borderRadius: "16px" }}>
                 <h4 style={{ fontSize: "1rem", fontWeight: "600", color: "#0f172a", marginBottom: "0.75rem" }}>

@@ -5,9 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Brain, Sparkles, Target, TrendingUp } from "lucide-react";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API } from "@/config";
 
 function Auth({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,7 +22,7 @@ function Auth({ onLogin }) {
 
     try {
       const endpoint = isLogin ? "/auth/login" : "/auth/register";
-      const payload = isLogin 
+      const payload = isLogin
         ? { email: formData.email, password: formData.password }
         : formData;
 

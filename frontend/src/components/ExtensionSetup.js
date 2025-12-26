@@ -2,11 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Download, CheckCircle, Chrome, Shield, Eye, Lock, Database } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SharedNav from "@/components/SharedNav";
+import { API, BACKEND_URL } from "@/config";
 
 function ExtensionSetup({ user, token, onLogout }) {
   const navigate = useNavigate();
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const API = `${BACKEND_URL}/api`;
 
   const handleDownload = async () => {
     try {
@@ -293,7 +292,7 @@ function ExtensionSetup({ user, token, onLogout }) {
                     display: "block",
                     marginBottom: "1rem"
                   }}>{BACKEND_URL}/api</code>
-                  
+
                   <p style={{ color: "#64748b", fontSize: "0.875rem", marginBottom: "0.5rem", fontWeight: "500" }}>Authentication Token:</p>
                   <code data-testid="user-token" style={{
                     fontFamily: "monospace",
